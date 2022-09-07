@@ -1,4 +1,4 @@
-ifndef BP_TREE_H
+#ifndef BP_TREE_H
 #define BP_TREE_H
 
 #include "helper_types.h"
@@ -33,6 +33,16 @@ class BPTree
 
     public:
         BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index);
+
+        int getNumNodes()
+        {
+            return numOfNode;
+        }
+
+        int getMaxKey()
+        {
+            return maxKey;
+        }
 
 
 }
