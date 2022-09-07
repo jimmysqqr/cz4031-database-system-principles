@@ -43,8 +43,8 @@ BPTree::BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index)
         throw std::overflow_error("ERROR! Number of keys and pointers are too large!");
     }
 
-    RootAddress = nullPointer;
-    root = nullPointer;
+    RootAddress = nullptr;
+    root = nullptr;
 
     nodeSize = blockSize;
 
