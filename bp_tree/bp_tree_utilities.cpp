@@ -32,33 +32,26 @@ TreeNode *BPTree::FindParent(TreeNode *PointerDiskAddress, TreeNode *ChildDiskAd
 
         for (int i = 0; i < point->numOfKey; i++)
         {
-        // If key is lesser than current key, go to the left pointer's node.
-        if (LowBoundKey < point->key[i])
-        {
-            // Load node in from disk to main memory.
-            Node *MainMemoryNode = (TreeNode *)index->LoadFromDisk(point->pointer[i], nodeSize);
+            if (LowBoundKey < point->key[i])
+            {
+                Node *MainMemoryNode = (TreeNode *)index->LoadFromDisk(point->pointer[i], nodeSize);
 
-            // Update parent address.
-            ParentDiskAddress = (TreeNode *)point->pointer[i].blockAddress;
+                ParentDiskAddress = (TreeNode *)point->pointer[i].blockAddress;
 
-            // Move to new node in main memory.
-            point = (TreeNode *)MainMemoryNode;
-            break;
-        }
+                point = (TreeNode *)MainMemoryNode;
+                break;
+            }
 
-        // Else if key larger than all keys in the node, go to last pointer's node (rightmost).
-        if (i == point->numOfKey - 1)
-        {
-            // Load node in from disk to main memory.
-            TreeNode *MainMemoryNode = (TreeNode *)index->LoadFromDisk(point->pointer[i +1], nodeSize);
+            if (i == point->numOfKey - 1)
+            {
+           
+                TreeNode *MainMemoryNode = (TreeNode *)index->LoadFromDisk(point->pointer[i +1], nodeSize);
+                
+                ParentDiskAddress = (TreeNode *)point->pointer[i + 1].blockAddress;
 
-            // Update parent address.
-            ParentDiskAddress = (TreeNode *)point->pointer[i + 1].blockAddress;
-
-            // Move to new node in main memory.
-            point = (TreeNode *)MainMemoryNode;
-            break;
-        }
+                point = (TreeNode *)MainMemoryNode;
+                break;
+            }
         }
     }
 
