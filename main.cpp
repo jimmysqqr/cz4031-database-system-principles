@@ -12,7 +12,7 @@
 
 using namespace std;
 
-int main(){
+int main() {
     // =============== Read in data and save on disk ======================= //
     // Set blockSize to be 200B
     int BLOCKSIZE = 200;
