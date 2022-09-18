@@ -1,78 +1,72 @@
-#ifndef BP_TREE_H
-#define BP_TREE_H
-
-#include "helper_types.h"
+#include "bp_tree.h"
 #include "disk_storage.h"
-#include <cstddef>
+#include "helper_types.h"
+
+#include <tuple>
+#include <iostream>
 #include <array>
+#include <unordered_map>
+#include <cstring>
 
-class TreeNode
+using namespace std;
+
+// initialise pointer to null at the beginning
+bool nullPointer = false;
+
+// Function to create individual tree node
+TreeNode::TreeNode(int totalDataKey)
 {
-    private:
+    // Dynamic allocation of a pointer to an array, size of array = total number of data key 
+    // float *DataKey = new float[totalDataKey]
+    dataKey = new float[totalDataKey];
 
-        // pointer to the next node
-        // total number of pointer will be = total number of data keys + 1
-        Address *pointer;
+    // Dynamic allocation of a pointer to an array, size of array = total number of data key + 1
+    // Address *pointer = new Address[totalDataKey]
+    pointer = new Address[totalDataKey + 1];
 
-        // data key to store each record
-        float *dataKey;
+    // using a for loop, for each of the pointer in the node, initialise it to NULL
+    for(int i = 0; i < totalDataKey + 1; i++)
+    {
+        Address nullAddress{(void *)nullPointer, 0};
+        pointer[i] = nullAddress;
+    }
 
-        // Used to keep track the number of data key we have or have "created" so far
-        int numOfKey;
-
-        // Boolean operator to check if the node is a leaf
-        bool isLeaf;
-
-        friend class BPTree;
-
-    public:
-        // total data key referes to the number of data key in a node
-        TreeNode(int totalDataKey);
-};
-
-class BPTree
-{
-    private:
-        // Pointer to Disk storage for data block
-        DiskStorage *disk;
-
-        // Pointer to disk storage in the disk
-        DiskStorage *index;
-
-        // Pointer to main memory
-        TreeNode *root;
-
-        // Pointer to root's address on the disk
-        void *addressOfRoot
-
-        // Total number of data key in the node
-        int totalDataKey;
-
-        // Number of level in the B+ tree
-        int numOflevel;
-
-        // NUmber of nodes in the B+ tree
-        int numOfNode;
-
-        // Size of a node in the tree, which is also equal to the size of a block
-        std::size nodeSize;
-
-    public:
-        BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index);
-
-
-        // Getter functions
-        int getNumOfNodes()
-        {
-            return numOfNode;
-        }
-
-        int getTotalDataKeyKey()
-        {
-            return totalDataKey;
-        }
-
-
+    // initialise the number of key that we have used or "created" for this node to be 0
+    // Because we are only creating a node and have not insert any record yet
+    numOfkey = 0;
 }
 
-#endif
+// Function to create a tree
+BPTree::BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index)
+{
+    // Amount fo size left after minusing off size used to keep track if node is a leaf node and number of keys
+    size sizeOfNodeBuffer = blockSize - sizeof(bool) - sizeof(int);
+
+    size sum = sizeof(Address);
+    maxKey = 0;
+
+    while(sum + sizeof(Address) + sizeof(float) <= NodeBufferSize)
+    {
+        sum += (sizeof(Address) + sizeof(float));
+        maxKey += 1;
+    }
+
+    if(maxKey == 0)
+    {
+        throw std::overflow_error("ERROR! Number of keys and pointers are too large!");
+    }
+
+    // Set the address of the root node and root to NULL
+    addressOfRoot = nullptr;
+    root = nullptr;
+
+    nodeSize = blockSize;
+
+    // At the creation of the tree, number of level and node will be = 0
+    numOflevel = 0;
+    numOfNode = 0;
+
+    // Initialisation of disk space for index and set reference to disk
+    this->disk = disk;
+    this->index = index;
+}
