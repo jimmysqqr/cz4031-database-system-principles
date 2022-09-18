@@ -9,39 +9,67 @@
 class TreeNode
 {
     private:
+
+        // pointer to the next node
+        // total number of pointer will be = total number of data keys + 1
         Address *pointer;
-        float *key;
+
+        // data key to store each record
+        float *dataKey;
+
+        // Used to keep track the number of data key we have or have "created" so far
         int numOfKey;
+
+        // Boolean operator to check if the node is a leaf
         bool isLeaf;
+
         friend class BPTree;
 
     public:
-        TreeNode(int maxDataKey);
+        // total data key referes to the number of data key in a node
+        TreeNode(int totalDataKey);
 };
 
 class BPTree
 {
     private:
+        // Pointer to Disk storage for data block
         DiskStorage *disk;
+
+        // Pointer to disk storage in the disk
         DiskStorage *index;
+
+        // Pointer to main memory
         TreeNode *root;
-        void *rootAddress
-        int maxKey;
-        int level;
+
+        // Pointer to root's address on the disk
+        void *addressOfRoot
+
+        // Total number of data key in the node
+        int totalDataKey;
+
+        // Number of level in the B+ tree
+        int numOflevel;
+
+        // NUmber of nodes in the B+ tree
         int numOfNode;
+
+        // Size of a node in the tree, which is also equal to the size of a block
         std::size nodeSize;
 
     public:
         BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index);
 
-        int getNumNodes()
+
+        // Getter functions
+        int getNumOfNodes()
         {
             return numOfNode;
         }
 
-        int getMaxKey()
+        int getTotalDataKeyKey()
         {
-            return maxKey;
+            return totalDataKey;
         }
 
 
