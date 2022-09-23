@@ -43,7 +43,7 @@ BPTree::BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index)
     size sizeOfNodeBuffer = blockSize - sizeof(bool) - sizeof(int);
 
     size sum = sizeof(Address);
-    maxKey = 0;
+    totalDataKey = 0;
 
     while(sum + sizeof(Address) + sizeof(float) <= NodeBufferSize)
     {
