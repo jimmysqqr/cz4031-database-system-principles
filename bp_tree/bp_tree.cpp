@@ -48,10 +48,10 @@ BPTree::BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index)
     while(sum + sizeof(Address) + sizeof(float) <= NodeBufferSize)
     {
         sum += (sizeof(Address) + sizeof(float));
-        maxKey += 1;
+        totalDataKey += 1;
     }
 
-    if(maxKey == 0)
+    if(totalDataKey == 0)
     {
         throw std::overflow_error("ERROR! Number of keys and pointers are too large!");
     }
