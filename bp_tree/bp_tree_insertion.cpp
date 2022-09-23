@@ -40,5 +40,13 @@ void BPTree::insert(Address address, float key)
         TreeNode *parent; // keep track of parent node for updating
         void *parentDiskAddress = addressOfRoot; // Keep track of parent's disk address for updating
         void *curNodeDiskAddress = addressOfRoot; // Store current node's disk address for updating
+
+        // Go through all nodes till you reach a leaf node
+        while(curNode->isLeaf == false){
+
+            // Set parent node for going back and assigning child node later and set parent disk address
+            parent = curNode;
+            parentDiskAddress = curNodeDiskAddress;
+        }
     }
 }
