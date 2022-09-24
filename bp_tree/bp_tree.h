@@ -13,19 +13,20 @@ private:
     // total number of pointer will be = total number of data keys + 1
     Address *pointer;
 
-    // data key to store each record
+    // Pointer to array of data keys in this tree node
     float *dataKey;
 
-    // Used to keep track the number of data key we have or have "created" so far
+    // Used to keep track the number of data keys we have or have "created" so far
     int numOfKey;
 
-    // Boolean operator to check if the node is a leaf
+    // Flag indicating if the node is a leaf
     bool isLeaf;
 
+    // We need to allow the BPTree class to access these private variables
     friend class BPTree;
 
 public:
-    // total data key referes to the number of data keys in a node
+    // totalDataKey referes to the number of data keys in a node
     TreeNode(int totalDataKey);
 };
 
@@ -65,12 +66,14 @@ public:
         return numOfNode;
     }
 
-    int getTotalDataKeyKey()
+    int getTotalDataKey()
     {
         return totalDataKey;
     }
 
     insert(Address address, float key);
+
+    search(float lower, floar upper);
 }
 
 #endif

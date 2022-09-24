@@ -25,7 +25,7 @@ TreeNode *BPTree::FindParent(TreeNode *PointerDiskAddress, TreeNode *ChildDiskAd
 
     while (point->isLeaf == false)
     {
-        for (int i = 0; i < pointer->numOfKey + 1; i++)
+        for (int i = 0; i < point->numOfKey+1; i++)
         {
             // If the current candidate node has a pointer, pointing to the target nnode, it the parent node
             if (point->pointer[i].blockAddress == ChildDiskAddress)
@@ -38,7 +38,7 @@ TreeNode *BPTree::FindParent(TreeNode *PointerDiskAddress, TreeNode *ChildDiskAd
         // This is in a similar to the search function
         for (int i = 0; i < point->numOfKey; i++)
         {
-            if (LowBoundKey < point->key[i])
+            if (LowBoundKey < point->dataKey[i])
             {
                 // Update the candidate parent
                 ParentDiskAddress = (TreeNode *)point->pointer[i].blockAddress;
