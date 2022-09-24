@@ -7,7 +7,7 @@
 
 
 // Function to insert data into nodes
-void BPTree::insert(Address address, float key)
+void BPTree::insertKey(Address address, float key)
 {
     if(addressOfRoot === nullptr)
     {
@@ -142,11 +142,148 @@ void BPTree::insert(Address address, float key)
                 
             }
         }
+        // If there is no space to insert new key, split the node into two and update the parent if required
+        else
+        {
+
+            // Create new leaf node to insert keys and pointers
+            TreeNode* newLeafNode = new TreeNode(totalDataKey);
+
+            // Create temporary list for keys and pointers
+            float tempKeyList[totalDataKey + 1];
+            float tempPointerList[totalDataKey + 1];
+
+            // Initialize next node
+            Address nextNode = curNode->pointer[curNode->numOfKey];
+                
+            // Copy all keys and pointers to temp array
+            int i;
+            for(i=0; i < totalDataKey; i++){
+                tempKeyList[i] = curNode->dataKey[i];
+                tempPointerList = curNode->pointer[i];
+            }
+
+            // Get index where key can be inserted
+            i = 0;
+            while(key > tempKeyList[i] && i < totalDataKey){
+                i++;
+            }
+            
+            // Check if key at index i has duplicates
+            if(i < totalDataKey && curNode->dataKey[i] == key){
+                
+                // If there is duplicates it means there is an existing linked list
+                // Insert key into linked list
+                curNode->pointer[i] = insertLL(curNode->pointer[i], address, key);
+                return;
+            }
+
+
+            // If there is no duplicate then insert new key
+            // First move temp list backwards by 1 key
+            for(int j=totalDataKey; j > i; j--){
+
+                tempKeyList[j] = tempKeyList[j-1];
+                tempPointerList[j] = tempPointerList[j-1];
+            }
+
+            // Create new linked list
+            TreeNode *nodeLL = new TreeNode(totalDataKey);
+            nodeLL->dataKey[0] = key;
+            nodeLL->isLeaf = false;
+            nodeLL->numOfKey = 1;
+            nodeLL->pointer[0] = address;
+
+            // Write new linked list node to disk
+            Address nodeLLAddress = index->writeToDisk((void *)nodeLL,nodeSize);
+
+            // Insert new key into temp key and pointer list
+            tempKeyList[i] = key;
+            tempPointerList[i] = nodeLLAddress;
+
+            // New node is a leaf node
+            newLeafNode->isLeaf = true;
+
+
+            // Set last pointer of new leaf node to point to previous last pointer of existing node (curNode)
+            // curNode was full, so last pointer would use numOfKey 
+            newLeafNode->pointer[newLeafNode->numOfKey] = nextNode;
+            
+            
+            // Update other pointers, keys and parent nodes
+
+            // First update current node's keys and pointers
+            for(i=0; i < curNode->numOfKey; i++){
+                curNode->dataKey[i] = tempKeyList[i];
+                curNode->pointer[i] = tempPointerList[i];
+            }
+
+            // Next update new leaf node
+            // Keep track of i index since we are using remaining keys and pointers
+            for(int j=0; j < newLeafNode->numOfKey; i++, j++){
+                newLeafNode->dataKey[j] = tempKeyList[i];
+                newLeafNode->pointer[j] = tempPointerList[i];
+            }
+
+            // Write the leaf nodes to disk
+            Address newLeafAddress = index->writeToDisk(newLeafNode,nodeSize);
+
+            // Assign curNode pointer to new leaf address
+            curNode->pointer[curNode->numOfKey] = newLeafAddress;
+
+            // Set empty float for wrong keys
+            for(i = curNode->numOfKey; i < totalDataKey; i++){
+                curNode->dataKey[i] = float();
+            }
+
+            // Set null pointer for wrong pointers
+            for(i = curNode->numOfKey+1; i < totalDataKey+1; i++){
+                Address nullAddress{nullptr, 0};
+                curNode->pointer[i] = nullAddress;
+            }
+
+            Address curNodeOriginalAddress{curNodeDiskAddress, 0};
+            index->writeToDisk(curNode, nodeSize, curNodeOriginalAddress);
+
+
+
+
+
+            // If curNode is at root level, then we need to make a new parent root
+            if(curNode == root){
+                TreeNode *newParentRoot = new TreeNode(totalDataKey);
+
+                // Set new parent root's key to be left bound of the right child (new leaf node)
+                newParentRoot->dataKey[0] = newLeafNode->dataKey[0];
+
+                // Point new parent root's children as current node and new node
+                Address curNodeDisk{curNodeDiskAddress, 0};
+                newParentRoot->pointer[0] = curNodeDisk;
+                newParentRoot->pointer[1] = newLeafAddress;
+
+                // Update new parent root's variables
+                newParentRoot->isLeaf = false;
+                newParentRoot->numOfKey = 1;
+
+                // Write new parent root to disk and update the root disk address
+                Address newParentRootAddress = index->writeToDisk(newParentRoot,nodeSize);
+                addressOfRoot = newParentRootAddress.blockAddress;
+                root = newParentRoot;
+            }
+            // If curNode is not root, insert a new parent in the middle levels of the trees
+            else 
+            {
+
+            }
+        }
     }
+
+    numOfNode = index->getNumBlocksAllocated();
 }
 
 // Function to insert record into existing linked list
-Address BPTree::insertLL(Address curNodeAddress, Address address, float key){
+Address BPTree::insertLL(Address curNodeAddress, Address address, float key)
+{
     
     TreeNode *curNode = (TreeNode *)index->readFromDisk(curNodeAddress, nodeSize);
 

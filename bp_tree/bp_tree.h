@@ -72,9 +72,11 @@ class BPTree
             return totalDataKey;
         }
 
-        insert(Address address, float key);
+        insertKey(Address address, float key);
 
         insertLL(Address headLL, Address address, float key);
+        
+        insertUpdateParent(TreeNode* curNodeDiskAddress, TreeNode* childDiskAddress, float key);
 }
 
 #endif
