@@ -16,7 +16,7 @@ bool nullPointer = false;
 // Function to create individual tree node
 TreeNode::TreeNode(int totalDataKey)
 {
-    // Dynamic allocation of a pointer to an array, size of array = total number of data key 
+    // Dynamic allocation of a pointer to an array, size of array = total number of data key
     // float *DataKey = new float[totalDataKey]
     dataKey = new float[totalDataKey];
 
@@ -25,7 +25,7 @@ TreeNode::TreeNode(int totalDataKey)
     pointer = new Address[totalDataKey + 1];
 
     // using a for loop, for each of the pointer in the node, initialise it to NULL
-    for(int i = 0; i < totalDataKey + 1; i++)
+    for (int i = 0; i < totalDataKey + 1; i++)
     {
         Address nullAddress{(void *)nullPointer, 0};
         pointer[i] = nullAddress;
@@ -39,19 +39,19 @@ TreeNode::TreeNode(int totalDataKey)
 // Function to create a tree
 BPTree::BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index)
 {
-    // Amount fo size left after minusing off size used to keep track if node is a leaf node and number of keys
+    // Amount of size left after subtracting off size used to keep track if node is a leaf node (boolean) and number of keys (integer)
     size sizeOfNodeBuffer = blockSize - sizeof(bool) - sizeof(int);
 
     size sum = sizeof(Address);
     totalDataKey = 0;
 
-    while(sum + sizeof(Address) + sizeof(float) <= NodeBufferSize)
+    while (sum + sizeof(Address) + sizeof(float) <= NodeBufferSize)
     {
         sum += (sizeof(Address) + sizeof(float));
         totalDataKey += 1;
     }
 
-    if(totalDataKey == 0)
+    if (totalDataKey == 0)
     {
         throw std::overflow_error("ERROR! Number of keys and pointers are too large!");
     }
