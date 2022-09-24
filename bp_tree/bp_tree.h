@@ -3,6 +3,7 @@
 
 #include "helper_types.h"
 #include "disk_storage.h"
+
 #include <cstddef>
 #include <array>
 
@@ -26,7 +27,7 @@ private:
     friend class BPTree;
 
 public:
-    // totalDataKey referes to the number of data keys in a node
+    // Constructor, totalDataKey referes to the number of data keys in a node
     TreeNode(int totalDataKey);
 };
 
@@ -49,7 +50,7 @@ private:
     int totalDataKey;
 
     // Number of level in the B+ tree
-    int numOflevel;
+    int numOfLevel;
 
     // Number of nodes in the B+ tree
     int numOfNode;
@@ -57,8 +58,12 @@ private:
     // Size of a node in the tree, which is also equal to the size of a block
     std::size_t nodeSize;
 
+    // Helper function to return the disk address of the immediate parent of the target node 
+    TreeNode *getParent(TreeNode *rootDiskAddress, TreeNode *targetDiskAddress, float lower);
+
 public:
-    BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index);
+    // Constructor 
+    BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index);
 
     // Getter functions
     int getNumOfNodes()
@@ -71,9 +76,11 @@ public:
         return totalDataKey;
     }
 
-    insert(Address address, float key);
+    int getHeight();
 
-    search(float lower, floar upper);
-}
+    void insert(Address address, float key);
+
+    void search(float lower, floar upper);
+};
 
 #endif

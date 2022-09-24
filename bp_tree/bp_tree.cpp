@@ -2,10 +2,8 @@
 #include "disk_storage.h"
 #include "helper_types.h"
 
-#include <tuple>
-#include <iostream>
 #include <array>
-#include <unordered_map>
+#include <iostream>
 #include <cstring>
 
 using namespace std;
@@ -33,19 +31,19 @@ TreeNode::TreeNode(int totalDataKey)
 
     // initialise the number of key that we have used or "created" for this node to be 0
     // Because we are only creating a node and have not insert any record yet
-    numOfkey = 0;
+    numOfKey = 0;
 }
 
 // Function to create a tree
-BPTree::BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index)
+BPTree::BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index)
 {
     // Amount of size left after subtracting off size used to keep track if node is a leaf node (boolean) and number of keys (integer)
-    size sizeOfNodeBuffer = blockSize - sizeof(bool) - sizeof(int);
+    size_t sizeOfNodeBuffer = blockSize - sizeof(bool) - sizeof(int);
 
-    size sum = sizeof(Address);
+    size_t sum = sizeof(Address);
     totalDataKey = 0;
 
-    while (sum + sizeof(Address) + sizeof(float) <= NodeBufferSize)
+    while (sum + sizeof(Address) + sizeof(float) <= sizeOfNodeBuffer)
     {
         sum += (sizeof(Address) + sizeof(float));
         totalDataKey += 1;
@@ -63,7 +61,7 @@ BPTree::BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index)
     nodeSize = blockSize;
 
     // At the creation of the tree, number of level and node will be = 0
-    numOflevel = 0;
+    numOfLevel = 0;
     numOfNode = 0;
 
     // Initialisation of disk space for index and set reference to disk

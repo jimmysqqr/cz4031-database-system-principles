@@ -1,7 +1,6 @@
 #include "bp_tree.h"
 #include "helper_types.h"
 
-#include <cstring>
 #include <iostream>
 
 using namespace std;
@@ -14,7 +13,7 @@ void BPTree::search(float lower, float upper)
     // Edge Case, tree is empty
     if (addressOfRoot == nullptr)
     {
-        throw std::logic_error("Tree is empty!");
+        throw logic_error("Tree is empty!");
     }
 
     // Else we shall traverse the tree by following the appropriate pointers till we reach a leaf node
@@ -31,7 +30,7 @@ void BPTree::search(float lower, float upper)
         // Pointer to current node
         TreeNode *curr = root;
 
-        while (not curr->isLeaf)
+        while (!curr->isLeaf)
         {
             // Iterate through the keys in the current node. Once we find the appropriate key, we shall load the node, it's pointer points to, into memory
             for (int i = 0; i < curr->numOfKey; i++)
@@ -53,7 +52,7 @@ void BPTree::search(float lower, float upper)
                 if (i == curr->numOfKey - 1)
                 {
                     // Load node from disk into main memory and update curr accordingly
-                    curr = (TreeNode *)index->readFromDisk(curr->pointer[i + 1], nodeSize); // Notice i+1 here
+                    curr = (TreeNode *)index->readFromDisk(curr->pointer[i+1], nodeSize); // Notice i+1 here
 
                     // Display the current node (it was accessed in the search process)
                     cout << "Non-Leaf node accessed. Contents.....";
