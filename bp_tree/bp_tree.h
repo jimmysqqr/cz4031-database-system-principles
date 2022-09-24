@@ -74,7 +74,7 @@ class BPTree
 
         insert(Address address, float key);
 
-
+        insertLL(Address headLL, Address address, float key);
 }
 
 #endif
