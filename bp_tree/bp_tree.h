@@ -74,7 +74,7 @@ class BPTree
 
         insert(Address address, float key);
 
-
-}
+        int remove(float key);
+};
 
 #endif
