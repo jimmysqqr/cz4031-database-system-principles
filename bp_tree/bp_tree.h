@@ -43,7 +43,7 @@ class BPTree
         TreeNode *root;
 
         // Pointer to root's address on the disk
-        void *addressOfRoot
+        void *addressOfRoot;
 
         // Total number of data key in the node
         int totalDataKey;
@@ -55,7 +55,7 @@ class BPTree
         int numOfNode;
 
         // Size of a node in the tree, which is also equal to the size of a block
-        std::size nodeSize;
+        std::size_t nodeSize;
 
     public:
         BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index);
@@ -71,6 +71,8 @@ class BPTree
         {
             return totalDataKey;
         }
+
+        insert(Address address, float key);
 
 
 }
