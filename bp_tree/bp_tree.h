@@ -79,8 +79,22 @@ public:
     int getHeight();
 
     void insert(Address address, float key);
-
+    
+    // Search functions that supports a range query on the B+ Tree Index
     void search(float lower, floar upper);
+
+    // Function that prints the entire B+ Tree 
+    void displayTree(TreeNode *, int level);
+
+    // Function that prints the specified node of the B+ Tree
+    void displayNode(TreeNode *node);
+
+    // Function that prints the entire linked list (pointed by the leaves)
+    void displayLL(Address LLHeadAddress);
+
+    // Function that prints the specified data block and its content
+    void displayBlock(void *block);
+    
 };
 
 #endif
