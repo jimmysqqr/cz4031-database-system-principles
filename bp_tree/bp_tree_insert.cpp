@@ -160,7 +160,7 @@ void BPTree::insertKey(Address address, float key)
             int i;
             for(i=0; i < totalDataKey; i++){
                 tempKeyList[i] = curNode->dataKey[i];
-                tempPointerList = curNode->pointer[i];
+                tempPointerList[i] = curNode->pointer[i];
             }
 
             // Get index where key can be inserted
@@ -328,5 +328,162 @@ Address BPTree::insertLL(Address curNodeAddress, Address address, float key)
         // Write new linked list to disk
         Address nodeLLAddress = index->writeToDisk((void *)nodeLL, nodeSize);
         return nodeLLAddress;
+    }
+}
+
+// Function to update parent nodes
+// Add new parent nodes if needed
+// Update child nodes respectively
+void BPTree::insertUpdateParent(TreeNode* curNodeDiskAddress, TreeNode* childDiskAddress, float key)
+{
+
+    // Get latest parent and child from disk
+    Address curNodeAddress{curNodeDiskAddress, 0};
+    TreeNode *curNode = (TreeNode *)index->readFromDisk(curNodeAddress, nodeSize);
+
+    Address childAddress{childDiskAddress, 0};
+    TreeNode *childNode = (TreeNode *)index->readFromDisk(childAddress, nodeSize);
+
+    // Set root to current node if current node disk address equals root address
+    if(curNodeDiskAddress == addressOfRoot){
+        root = curNode;
+    }
+
+    // If parent (curNode) still has space, add child node as a pointer 
+    if(curNode->numOfKey < totalDataKey){
+        
+        // Get index to insert new child node
+        int i = 0;
+        while(key > curNode->dataKey[i] && i < curNode->numOfKey){
+            i++;
+        }
+
+
+        // Shift pointers and keys 1 space back 
+        for(int j = curNode->numOfKey; j > i; j--){
+            curNode->dataKey[j] = curNode->dataKey[j-1];
+        }
+
+        for(int j = curNode->numOfKey+1; j > i+1; j--){
+            curNode->pointer[j] = curNode->pointer[j-1];
+        }
+
+        // Add in new child node's lower bound key and pointer to parent
+        curNode->dataKey[i] = key;
+        curNode->pointer[i + 1] =  childAddress;
+        curNode->numOfKey++;
+
+        // Write updated parent to disk
+        index->writeToDisk(curNode, nodeSize, curNodeAddress);
+    }
+    // Else if parent node does not have space, split parent node and insert more parent nodes
+    else
+    {
+
+        TreeNode *newParentNode = new TreeNode(totalDataKey);
+
+        // Extra pointer to keep track of new child pointer 
+        float tempKeyList[totalDataKey + 1];
+        Address tempPointerList[totalDataKey + 2];
+
+        // Copy all keys into temp key list
+        for(int i=0; i < totalDataKey; i++){
+            tempKeyList[i] = curNode->dataKey[i];
+        }
+
+        for(int i=0; i < totalDataKey + 1; i++){
+            tempPointerList[i] = curNode->pointer[i];
+        }
+
+        // Find index to insert key
+        int i = 0;
+        while(key < tempKeyList[i] && i < totalDataKey){
+            i++;
+        }
+
+        // Shift temp keys back by 1 space
+        for(int j=totalDataKey; j > i; j--){
+            tempKeyList[j] = tempKeyList[j-1];
+        }
+
+        // Insert new key
+        tempKeyList[i] = key;
+
+        // Shift temp pointer back 1 space
+        for(int j=totalDataKey+1; j > i+1; j--){
+            tempPointerList[j] = tempPointerList[j - 1];
+        }
+
+        // Insert new pointer to right of child's key
+        tempPointerList[i + 1] = childAddress;
+        newParentNode->isLeaf = false;
+
+        // Split nodes into 2. floor(n/2) keys for left node
+        curNode->numOfKey = (totalDataKey+1) /2;
+        newParentNode->numOfKey = totalDataKey - (totalDataKey+1)/2;
+        
+        // Update keys into curNode from tempKeyList
+        for(i=0; i < curNode->numOfKey; i++){
+            curNode->dataKey[i] = tempKeyList[i];
+        }
+
+        // Insert new keys into new parent node
+        for(i=0, j=curNode->numOfKey+1; i < newParentNode->numOfKey; i++, j++){
+            newParentNode->pointer[i] = tempPointerList[j];
+        }
+
+        // Set empty float for wrong keys
+        for(i=curNode->numOfKey; i < totalDataKey; i++){
+            curNode->dataKey[i] = float();
+        } 
+
+        // Set null pointer for wrong pointers
+        for(i=curNode->numOfKey+1; i < totalDataKey+1; i++){
+            Address nullAddress{nullptr, 0};
+            curNode->pointer[i] = nullAddress;
+        }
+
+        // Assign new child to parent
+        curNode->pointer[curNode->numOfKey] = childAddress;
+
+        // Write old parent and new parent to disk
+        index->writeToDisk(curNode, nodeSize, curNodeAddress);
+        Address newParentDiskAddress = index->writeToDisk(newParentNode,nodeSize);
+
+        
+
+
+
+        // if current node is root, we need to create new root
+        if(curNode == root){
+            
+            TreeNode *newParentRoot = new TreeNode(nodeSize);
+            
+            // Update parent root to hold children
+            newParentRoot->dataKey[0] = curNode->dataKey[curNode->numOfKey];
+
+            // Update parent root children with previous 2 nodes
+            newParentRoot->pointer[0] = curNodeAddress;
+            newParentRoot->pointer[1] = newParentDiskAddress;
+
+            // Update parent root variables
+            newParentRoot->isLeaf = false;
+            newParentRoot->numOfKey = 1;
+
+            root = newParentRoot;
+
+            // save new parent root to disk
+            Address newRootDiskAddress = index->writeToDisk(root, nodeSize);
+
+            // Update root address
+            addressOfRoot = newRootDiskAddress.blockAddress;
+        }
+        // If current node is not parent, need to split again
+        // call this function recursively
+        else
+        {
+            // GET PARENT AND CALL RECURSIVELY
+        }
+        
     }
 }
