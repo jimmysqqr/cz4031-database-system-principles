@@ -51,7 +51,7 @@ class BPTree
         // Number of level in the B+ tree
         int numOflevel;
 
-        // NUmber of nodes in the B+ tree
+        // Number of nodes in the B+ tree
         int numOfNode;
 
         // Size of a node in the tree, which is also equal to the size of a block
