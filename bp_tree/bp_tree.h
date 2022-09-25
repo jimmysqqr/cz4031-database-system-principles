@@ -58,11 +58,11 @@ private:
     // Size of a node in the tree, which is also equal to the size of a block
     std::size_t nodeSize;
 
-    // Helper function to return the disk address of the immediate parent of the target node 
+    // Helper function to return the disk address of the immediate parent of the target node
     TreeNode *getParent(TreeNode *rootDiskAddress, TreeNode *targetDiskAddress, float lower);
 
 public:
-    // Constructor 
+    // Constructor
     BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index);
 
     // Getter functions
@@ -79,22 +79,18 @@ public:
     int getHeight();
 
     void insert(Address address, float key);
-    
+
     // Search functions that supports a range query on the B+ Tree Index
     void search(float lower, floar upper);
-
-    // Function that prints the entire B+ Tree 
-    void displayTree(TreeNode *, int level);
 
     // Function that prints the specified node of the B+ Tree
     void displayNode(TreeNode *node);
 
-    // Function that prints the entire linked list (pointed by the leaves)
-    void displayLL(Address LLHeadAddress);
-
     // Function that prints the specified data block and its content
-    void displayBlock(void *block);
-    
+    void displayBlock(void *blockAddress);
+
+    // Function that prints the entire linked list (pointed by the leaves)
+    void displayList(Address headAddress);
 };
 
 #endif
