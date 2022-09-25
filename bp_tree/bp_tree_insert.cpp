@@ -483,6 +483,9 @@ void BPTree::insertUpdateParent(TreeNode* curNodeDiskAddress, TreeNode* childDis
         else
         {
             // GET PARENT AND CALL RECURSIVELY
+            TreeNode *parentAddress = FindParent((TreeNode *)addressOfRoot, curNodeDiskAddress, curNode->dataKey[0]);
+
+            insertUpdateParent(parentAddress, (TreeNode *)newParentDiskAddress.blockAddress , tempKeyList[curNode->numOfKey]);
         }
         
     }

@@ -57,6 +57,12 @@ class BPTree
         // Size of a node in the tree, which is also equal to the size of a block
         std::size_t nodeSize;
 
+        // Inserts new parent or updates parent in the tree with child nodes
+        insertUpdateParent(TreeNode* curNodeDiskAddress, TreeNode* childDiskAddress, float key);
+
+        // Find parent of a node
+        TreeNode *FindParent(TreeNode *, TreeNode *, float key);
+
     public:
         BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index);
 
@@ -76,7 +82,6 @@ class BPTree
 
         insertLL(Address headLL, Address address, float key);
         
-        insertUpdateParent(TreeNode* curNodeDiskAddress, TreeNode* childDiskAddress, float key);
 }
 
 #endif
