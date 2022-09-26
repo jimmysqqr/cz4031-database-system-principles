@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// Function to delete records of a certain key
+// Function to delete records of a certain key, returns no. of tree nodes deleted
 int BPTree::remove(float key) {
     // tree is empty
     if (addressOfRoot == nullptr) {
@@ -16,8 +16,8 @@ int BPTree::remove(float key) {
     }
 
     // load root node from disk into main memory
-    Address rootDiskAddress{addressOfRoot, 0};
-    root = (TreeNode *)index->readFromDisk(rootDiskAddress, nodeSize);
+    Address addressOfRootDisk{addressOfRoot, 0};
+    root = (TreeNode *)index->readFromDisk(addressOfRootDisk, nodeSize);
 
     // initalize current node for traversing
     TreeNode *currentNode = root;
@@ -76,17 +76,17 @@ int BPTree::remove(float key) {
     // now find the key in this leaf node
 
     int keyIdx;
-    bool keyFound = false;
+    bool FLAG_keyFound = false;
 
-    for (keyIdx = 0; i < currentNode->numOfKey; i++) {
-        if (currentNode->dataKey[i] == key) {
-            keyFound = true;
+    for (keyIdx = 0; keyIdx < currentNode->numOfKey; keyIdx++) {
+        if (currentNode->dataKey[keyIdx] == key) {
+            FLAG_keyFound = true;
             break;
         }
     }
 
     // key to remove does not exist, no key removed
-    if (!keyFound) {
+    if (!FLAG_keyFound) {
         // throw std::logic_error("Deletion failed: Tree is empty.");
         cout << "Deletion failed: Key " << key << " does not exist." << endl;
         return 0;
@@ -95,16 +95,104 @@ int BPTree::remove(float key) {
     // we have found the key to remove
     // now remove the entire linked list pointed by this key
 
-    // now remove the key in the leaf node
+    // get pointer to first record from disk
+    Address *LLheadAddress = currentNode->pointer[keyIdx];
+    TreeNode *LLhead = (TreeNode *)index->readFromDisk(LLheadAddress, nodeSize);
+
+    // deallocate current record
+    index->deallocateRecord(LLheadAddress, nodeSize);
+
+    // keep accessing the next node to deallocate it
+    while (LLhead->pointer[LLhead->numOfKey].blockAddress != nullptr)
+    {
+        LLheadAddress = LLhead->pointer[LLhead->numOfKey];
+        LLhead = (TreeNode *)index->readFromDisk(LLheadAddress, nodeSize);
+        index->deallocateRecord(LLheadAddress, nodeSize);
+    }
+
+    // we have deleted the records pointed by the key
+    // now delete the key in the leaf node by moving all keys & pointers forward
+
+    // (currentNode->numOfKey-1) has "-1" in order to not index out of range
+    for (int i = keyIdx; i < currentNode->numOfKey-1; i++) {
+        currentNode->dataKey[i] = currentNode->dataKey[i+1];
+        currentNode->pointer[i] = currentNode->pointer[i+1];
+    }
+    // move rightmost pointer
+    currentNode->pointer[currentNode->numOfKey-1] = currentNode->pointer[currentNode->numOfKey];
+
+    // decrement number of keys in the node
+    currentNode->numOfKey--;
+
+    // TODO: check whether we need to set every pointer from the last key, bcos every pointer after this one should alr be NULL
+    // remove the pointer near the last key, +1 to access the previously occupied pointer
+    Address nullAddr{nullptr, 0};
+    currentNode->pointer[currentNode->numOfKey+1] = nullAddr;
+
+    // we have deleted the key from the leaf node
+    // now re-organise the B+ tree by following 2 rules
 
     // rule 1: each leaf node (except root) must have >= floor((n+1)/2) keys
     // rule 2: each internal node (except root) must have >= floor(n/2) keys
 
-    // there are 3 cases to handle
+    // there are 4 cases to handle
 
-    // (1) no rules violated
+    // (1) leaf node is also the root, if so, will NOT violate any rules
+    if (currentNode == root) {
 
-    // (2) will violate rules, CAN borrow a key from sibling node
+        // check whether the root node is empty
+        if (root->numOfKey == 0) {
+            // deallocate root node
+            index->deallocateRecord(addressOfRootDisk, nodeSize);
 
-    // (3) will violate rules, CANNOT borrow a key from sibling node
+            // set root pointers to NULL
+            root = nullptr;
+            addressOfRoot = nullptr;
+            
+            // update stats
+            numOfNode--;
+            numOflevel--;
+            cout << "Key " << key << " deleted. Root node deleted. B+ tree index is now empty." << endl;
+
+            return 1;
+        }
+
+        // no stats to update
+
+        // write updated node to disk
+        Address currentNodeAddress = {currentDiskAddress, 0};
+        index->writeToDisk(currentNode, nodeSize, currentNodeAddress)
+
+        cout << "Key " << key << " in root node deleted." << endl;
+
+        return 0;
+    }
+    
+    // (2) leaf node, no rules violated
+    // check if leaf node has minimum of floor((n+1)/2) keys
+    if (currentNode->isLeaf >= floor((totalDataKey + 1) / 2)) {
+        // write updated node to disk
+        Address currentNodeAddress = {currentDiskAddress, 0};
+        index->writeToDisk(currentNode, nodeSize, currentNodeAddress)
+
+        // no stats to update
+
+        cout << "Key " << key << " in leaf node deleted." << endl;
+
+        return 0;
+    }
+
+    // (3) will violate rules, CAN borrow a key from sibling node
+    // check left and right sibling to borrow a key
+
+    // check left sibling
+
+
+    // check right sibling
+
+
+    // (4) will violate rules, CANNOT borrow a key from sibling node
+
+
+
 }
