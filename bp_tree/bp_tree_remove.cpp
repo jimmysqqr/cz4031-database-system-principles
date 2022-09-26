@@ -31,20 +31,34 @@ int BPTree::remove(float key) {
     // keep track of parent's disk address in case of updates
     void *parentDiskAddress = addressOfRoot;
 
+    // keep track of index of left and right sibling to borrow a key
+    // they will be index of the parentNode (parent of currentNode)
+    int leftSibling, rightSibling;
+
     // keep track of number of deleted nodes
     int numDeletedNodes = 0;
+
 
     // find the node - while not leaf node, traverse the tree
     while (!currentNode->isLeaf) {
         // traverse the keys
         int numNodeKeys = currentNode->numOfKey;
 
+        // set parent node and disk address in case of updates
+        parentNode = currentNode;
+        parentDiskAddress = currentDiskAddress;
+
         for (int i = 0; i < numNodeKeys; i++) {
+
             float currentKey = currentNode->dataKey[i];
+
+            // update index of left and right sibling
+            leftSibling = i - 1;
+            rightSibling = i + 1;
 
             // if key is smaller than current key, then follow its (left)
             if (key < currentKey) {
-                // load tree node from disk into main mem
+                // load current node from disk into main mem
                 TreeNode *tempNode = (TreeNode *)index->readFromDisk(
                     currentNode->pointer[i], nodeSize);
 
@@ -58,6 +72,11 @@ int BPTree::remove(float key) {
 
             // if key is bigger than all keys, then follow the rightmost pointer
             if (i == numNodeKeys - 1) {
+
+                // update index of left and right sibling
+                leftSibling = i;
+                rightSibling = i + 2; // or use -1 bcos no right sibling //TODO
+
                 // load tree node from disk into main mem
                 TreeNode *tempNode = (TreeNode *)index->readFromDisk(
                     currentNode->pointer[i + 1], nodeSize);
@@ -140,6 +159,8 @@ int BPTree::remove(float key) {
     // (1) leaf node is also the root, if so, will NOT violate any rules
     if (currentNode == root) {
 
+        cout << "Leaf node is the root of the tree." << endl;
+
         // check whether the root node is empty
         if (root->numOfKey == 0) {
             // deallocate root node
@@ -161,7 +182,7 @@ int BPTree::remove(float key) {
 
         // write updated node to disk
         Address currentNodeAddress = {currentDiskAddress, 0};
-        index->writeToDisk(currentNode, nodeSize, currentNodeAddress)
+        index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
 
         cout << "Key " << key << " in root node deleted." << endl;
 
@@ -170,10 +191,10 @@ int BPTree::remove(float key) {
     
     // (2) leaf node, no rules violated
     // check if leaf node has minimum of floor((n+1)/2) keys
-    if (currentNode->isLeaf >= floor((totalDataKey + 1) / 2)) {
+    if (currentNode->numOfKey >= floor((totalDataKey + 1) / 2)) {
         // write updated node to disk
         Address currentNodeAddress = {currentDiskAddress, 0};
-        index->writeToDisk(currentNode, nodeSize, currentNodeAddress)
+        index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
 
         // no stats to update
 
@@ -185,13 +206,114 @@ int BPTree::remove(float key) {
     // (3) will violate rules, CAN borrow a key from sibling node
     // check left and right sibling to borrow a key
 
-    // check left sibling
+    // check if left sibling exists
+    if (leftSibling >= 0) {
+        // load left sibling from disk into main mem
+        TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
 
+        // check if borrowing a key from left sibling is legal
+        if (leftNode->numOfKey >= floor((totalDataKey + 1) / 2)) {
 
-    // check right sibling
+            // insert rightmost key of leftNode into first position of currentNode
 
+            // move currentNode last pointer backward
+            currentNode->pointer[currentNode->numOfKey+1] = currentNode->pointer[currentNode->numOfKey];
+
+            // move all other keys & pointers in currentNode backward
+            for (int i = currentNode->numOfKey; i > 0; i--) {
+                currentNode->dataKey[i] = currentNode->dataKey[i-1];
+                currentNode->pointer[i] = currentNode->pointer[i-1];
+            }
+
+            // migrate borrowed key & pointer from leftNode into currentNode
+            currentNode->dataKey[0] = leftNode->dataKey[leftNode->numOfKey-1];
+            currentNode->pointer[0] = leftNode->pointer[leftNode->numOfKey-1];
+
+            // update stats
+            currentNode->numOfKey++;
+            leftNode->numOfKey--;
+
+            // move leftNode last pointer forward
+            leftNode->pointer[leftNode->numOfKey] = leftNode->pointer[leftNode->numOfKey+1];
+
+            // update parentNode key bcos first key of currentNode has changed
+            parentNode->dataKey[leftSibling] = currentNode->dataKey[0];
+
+            // write updated current, left, and parent nodes to disk
+            Address currentNodeAddress = {currentDiskAddress, 0};
+            Address parentNodeAddress = {parentDiskAddress, 0};
+            index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
+            index->writeToDisk(leftNode, nodeSize, parentNode->pointer[leftSibling]);
+            index->writeToDisk(parentNode, nodeSize, parentNodeAddress);
+
+            cout << "Key " << key << " in leaf node deleted." << endl;
+            cout << "Borrowed key " << currentNode->dataKey[0] << " from left node." << endl;
+
+            return 0;
+        } else {
+            cout << "Left sibling of current node has no key to borrow from." << endl;
+        }
+    } else {
+        cout << "Current node has no left sibling." << endl;
+    }
+
+    // at this point, left sibling does not exist OR does not have a key to borrow from
+    
+    // check if right sibling exists
+    if (rightSibling <= parentNode->numOfKey && rightSibling >= 0) {
+        // load right sibling from disk into main mem
+        TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
+
+        // check if borrowing a key from right sibling is legal
+        if (rightNode->numOfKey >= floor((totalDataKey + 1) / 2)) {
+
+            // insert first key of rightNode into last position of currentNode
+
+            // move currentNode last pointer backward
+            currentNode->dataKey[currentNode->numOfKey+1] = currentNode->dataKey[currentNode->numOfKey];
+
+            // migrate borrowed key & pointer from rightNode into currentNode
+            currentNode->dataKey[currentNode->numOfKey] = rightNode->dataKey[0];
+            currentNode->pointer[currentNode->numOfKey] = rightNode->pointer[0];
+
+            // update stats
+            currentNode->numOfKey++;
+            rightNode->numOfKey--;
+
+            // move rightNode last pointer forward
+            rightNode->pointer[currentNode->numOfKey] = rightNode->pointer[currentNode->numOfKey+1];
+
+            // move all other keys & pointers in rightNode backward
+            for (int i = 0; i < rightNode->numOfKey; i++) {
+                rightNode->dataKey[i] = rightNode->dataKey[i+1];
+                rightNode->pointer[i] = rightNode->pointer[i+1];
+            }
+
+            // write updated current, right, and parent nodes to disk
+            Address currentNodeAddress = {currentDiskAddress, 0};
+            Address parentNodeAddress = {parentDiskAddress, 0};
+            index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
+            index->writeToDisk(rightNode, nodeSize, parentNode->pointer[rightSibling]);
+            index->writeToDisk(parentNode, nodeSize, parentNodeAddress);
+
+            cout << "Key " << key << " in leaf node deleted." << endl;
+            cout << "Borrowed key " << currentNode->dataKey[currentNode->numOfKey-1] << " from right node." << endl;
+
+            return 0;
+        } else {
+            cout << "Right sibling of current node has no key to borrow from." << endl;
+        }
+    } else {
+        cout << "Current node has no right sibling." << endl;
+    }
 
     // (4) will violate rules, CANNOT borrow a key from sibling node
+    // at this point, no siblings exist OR no key can be borrowed from both siblings
+
+    // check if right sibling exists
+    if (leftSibling >= 0) {
+        
+    }
 
 
 
