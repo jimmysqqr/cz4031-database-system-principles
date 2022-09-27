@@ -1,8 +1,8 @@
 #ifndef BP_TREE_H
 #define BP_TREE_H
 
-#include "helper_types.h"
-#include "disk_storage.h"
+#include "../storage/helper_types.h"
+#include "../storage/disk_storage.h"
 #include <cstddef>
 #include <array>
 
@@ -58,7 +58,7 @@ class BPTree
         std::size_t nodeSize;
 
     public:
-        BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index);
+        BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index);
 
 
         // Getter functions
@@ -72,10 +72,29 @@ class BPTree
             return totalDataKey;
         }
 
-        insert(Address address, float key);
+        int getHeight();
+
+        void insert(Address address, float key);
+
+        void insertKey(Address address, float key);
+
+        Address insertLL(Address headLL, Address address, float key);
+
+        // Search functions that supports a range query on the B+ Tree Index
+        void search(float lower, float upper);
+
+        // Function that prints the specified node of the B+ Tree
+        void displayNode(TreeNode *node);
+
+        // Function that prints the specified data block and its content
+        void displayBlock(void *blockAddress);
+
+        // Function that prints the entire linked list (pointed by the leaves)
+        void displayList(Address headAddress);
 
         int remove(float key);
-        int recursiveParentUpdate(float key, TreeNode *currentDiskAddress, TreeNode *childDiskAddress);
+
+        int recursiveParentUpdate(float key, int keyIdx, TreeNode *currentDiskAddress, TreeNode *childDiskAddress);
 };
 
 #endif
