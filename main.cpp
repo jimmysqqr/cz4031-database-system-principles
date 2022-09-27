@@ -16,7 +16,7 @@ using namespace std;
 int main()
 {
     // =============== Read in data and save on disk ======================= //
-    // User can set block size
+    // User can set the block size
     cout << "Welcome! First enter the Block Size (200 or 500 Bytes): ";
     int BLOCKSIZE;
     cin >> BLOCKSIZE;
@@ -76,8 +76,6 @@ int main()
             // Write this record to the disk
             Address address = disk.writeToDisk(&record, sizeof(Record));
 
-            
-
             recordNum++;
         }
         cout << "Number of records: " << recordNum << endl;
@@ -91,7 +89,7 @@ int main()
     cout << "Size of database used by allocated blocks    : " << disk.getTotalDiskUsage() << "B or " << disk.getTotalDiskUsage() / pow(10, 6) << "MB" << endl;
     cout << "Actual size of database used by saved records: " << disk.getDiskUsage() << "B or " << disk.getDiskUsage() / pow(10, 6) << "MB" << endl;
     cout << "__________________________________________________________________________" << endl;
-    
+
     // Reset the no. of blocks accessed for the next experiment
     disk.resetNumBlocksAccessed();
 
