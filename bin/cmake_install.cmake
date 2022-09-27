@@ -39,12 +39,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("D:/Coding/CZ4031/Project 1/bin/bp_tree/cmake_install.cmake")
+  include("D:/Coding/CZ4031/Project 1/bin/storage/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("D:/Coding/CZ4031/Project 1/bin/storage/cmake_install.cmake")
+  include("D:/Coding/CZ4031/Project 1/bin/bp_tree/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)

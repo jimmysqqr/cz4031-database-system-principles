@@ -11,13 +11,11 @@ set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
 project(CZ4031)
 
 # add the bp_tree and storage libraries
-add_subdirectory(bp_tree)
 add_subdirectory(storage)
+add_subdirectory(bp_tree)
 
 # add the executable
 add_executable(main main.cpp)
-
-target_link_libraries(main PUBLIC bp_tree storage)
 
 # add the binary tree to the search path for include files
 # so that it will find the header files
@@ -26,3 +24,6 @@ target_include_directories(main
     "${PROJECT_SOURCE_DIR}/bp_tree"
     "${PROJECT_SOURCE_DIR}/storage"
     )
+
+target_link_libraries(main PUBLIC storage bp_tree)
+target_link_directories(main PUBLIC storage bp_tree)

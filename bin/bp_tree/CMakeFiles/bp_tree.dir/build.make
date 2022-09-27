@@ -124,27 +124,12 @@ bp_tree/CMakeFiles/bp_tree.dir/bp_tree_search.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/bp_tree.dir/bp_tree_search.cpp.s"
 	cd /d D:\Coding\CZ4031\PROJEC~1\bin\bp_tree && C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "D:\Coding\CZ4031\Project 1\bp_tree\bp_tree_search.cpp" -o CMakeFiles\bp_tree.dir\bp_tree_search.cpp.s
 
-bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj: bp_tree/CMakeFiles/bp_tree.dir/flags.make
-bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj: D:/Coding/CZ4031/Project\ 1/bp_tree/bp_tree_insert.cpp
-bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj: bp_tree/CMakeFiles/bp_tree.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="D:\Coding\CZ4031\Project 1\bin\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj"
-	cd /d D:\Coding\CZ4031\PROJEC~1\bin\bp_tree && C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj -MF CMakeFiles\bp_tree.dir\bp_tree_insert.cpp.obj.d -o CMakeFiles\bp_tree.dir\bp_tree_insert.cpp.obj -c "D:\Coding\CZ4031\Project 1\bp_tree\bp_tree_insert.cpp"
-
-bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.i"
-	cd /d D:\Coding\CZ4031\PROJEC~1\bin\bp_tree && C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "D:\Coding\CZ4031\Project 1\bp_tree\bp_tree_insert.cpp" > CMakeFiles\bp_tree.dir\bp_tree_insert.cpp.i
-
-bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.s"
-	cd /d D:\Coding\CZ4031\PROJEC~1\bin\bp_tree && C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "D:\Coding\CZ4031\Project 1\bp_tree\bp_tree_insert.cpp" -o CMakeFiles\bp_tree.dir\bp_tree_insert.cpp.s
-
 # Object files for target bp_tree
 bp_tree_OBJECTS = \
 "CMakeFiles/bp_tree.dir/bp_tree.cpp.obj" \
 "CMakeFiles/bp_tree.dir/bp_tree_utilities.cpp.obj" \
 "CMakeFiles/bp_tree.dir/bp_tree_display.cpp.obj" \
-"CMakeFiles/bp_tree.dir/bp_tree_search.cpp.obj" \
-"CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj"
+"CMakeFiles/bp_tree.dir/bp_tree_search.cpp.obj"
 
 # External object files for target bp_tree
 bp_tree_EXTERNAL_OBJECTS =
@@ -153,10 +138,9 @@ bp_tree/libbp_tree.a: bp_tree/CMakeFiles/bp_tree.dir/bp_tree.cpp.obj
 bp_tree/libbp_tree.a: bp_tree/CMakeFiles/bp_tree.dir/bp_tree_utilities.cpp.obj
 bp_tree/libbp_tree.a: bp_tree/CMakeFiles/bp_tree.dir/bp_tree_display.cpp.obj
 bp_tree/libbp_tree.a: bp_tree/CMakeFiles/bp_tree.dir/bp_tree_search.cpp.obj
-bp_tree/libbp_tree.a: bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj
 bp_tree/libbp_tree.a: bp_tree/CMakeFiles/bp_tree.dir/build.make
 bp_tree/libbp_tree.a: bp_tree/CMakeFiles/bp_tree.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="D:\Coding\CZ4031\Project 1\bin\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library libbp_tree.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="D:\Coding\CZ4031\Project 1\bin\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX static library libbp_tree.a"
 	cd /d D:\Coding\CZ4031\PROJEC~1\bin\bp_tree && $(CMAKE_COMMAND) -P CMakeFiles\bp_tree.dir\cmake_clean_target.cmake
 	cd /d D:\Coding\CZ4031\PROJEC~1\bin\bp_tree && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\bp_tree.dir\link.txt --verbose=$(VERBOSE)
 

@@ -129,19 +129,6 @@ main/fast:
 .PHONY : main/fast
 
 #=============================================================================
-# Target rules for targets named bp_tree
-
-# Build rule for target.
-bp_tree: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 bp_tree
-.PHONY : bp_tree
-
-# fast build rule for target.
-bp_tree/fast:
-	$(MAKE) $(MAKESILENT) -f bp_tree\CMakeFiles\bp_tree.dir\build.make bp_tree/CMakeFiles/bp_tree.dir/build
-.PHONY : bp_tree/fast
-
-#=============================================================================
 # Target rules for targets named storage
 
 # Build rule for target.
@@ -153,6 +140,19 @@ storage: cmake_check_build_system
 storage/fast:
 	$(MAKE) $(MAKESILENT) -f storage\CMakeFiles\storage.dir\build.make storage/CMakeFiles/storage.dir/build
 .PHONY : storage/fast
+
+#=============================================================================
+# Target rules for targets named bp_tree
+
+# Build rule for target.
+bp_tree: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 bp_tree
+.PHONY : bp_tree
+
+# fast build rule for target.
+bp_tree/fast:
+	$(MAKE) $(MAKESILENT) -f bp_tree\CMakeFiles\bp_tree.dir\build.make bp_tree/CMakeFiles/bp_tree.dir/build
+.PHONY : bp_tree/fast
 
 main.obj: main.cpp.obj
 .PHONY : main.obj

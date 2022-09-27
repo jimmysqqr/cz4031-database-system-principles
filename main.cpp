@@ -37,7 +37,7 @@ int main()
 
     // Creating the tree
     BPTree bptree = BPTree(BLOCKSIZE, &disk, &index);
-    cout << "Max keys in a node of the B+ tree: " << bptree.getTotalDataKey() << endl;
+    cout << "\nMax keys in a node of the B+ tree: " << bptree.getTotalDataKey() << endl;
     cout << "Height of the B+ tree: " << bptree.getHeight() << endl;
 
     // Reset the no. of blocks accessed
