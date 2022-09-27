@@ -177,30 +177,6 @@ bp_tree_display.cpp.s:
 	cd /d D:\Coding\CZ4031\PROJEC~1\bin && $(MAKE) $(MAKESILENT) -f bp_tree\CMakeFiles\bp_tree.dir\build.make bp_tree/CMakeFiles/bp_tree.dir/bp_tree_display.cpp.s
 .PHONY : bp_tree_display.cpp.s
 
-bp_tree_insert.obj: bp_tree_insert.cpp.obj
-.PHONY : bp_tree_insert.obj
-
-# target to build an object file
-bp_tree_insert.cpp.obj:
-	cd /d D:\Coding\CZ4031\PROJEC~1\bin && $(MAKE) $(MAKESILENT) -f bp_tree\CMakeFiles\bp_tree.dir\build.make bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj
-.PHONY : bp_tree_insert.cpp.obj
-
-bp_tree_insert.i: bp_tree_insert.cpp.i
-.PHONY : bp_tree_insert.i
-
-# target to preprocess a source file
-bp_tree_insert.cpp.i:
-	cd /d D:\Coding\CZ4031\PROJEC~1\bin && $(MAKE) $(MAKESILENT) -f bp_tree\CMakeFiles\bp_tree.dir\build.make bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.i
-.PHONY : bp_tree_insert.cpp.i
-
-bp_tree_insert.s: bp_tree_insert.cpp.s
-.PHONY : bp_tree_insert.s
-
-# target to generate assembly for a file
-bp_tree_insert.cpp.s:
-	cd /d D:\Coding\CZ4031\PROJEC~1\bin && $(MAKE) $(MAKESILENT) -f bp_tree\CMakeFiles\bp_tree.dir\build.make bp_tree/CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.s
-.PHONY : bp_tree_insert.cpp.s
-
 bp_tree_search.obj: bp_tree_search.cpp.obj
 .PHONY : bp_tree_search.obj
 
@@ -264,9 +240,6 @@ help:
 	@echo ... bp_tree_display.obj
 	@echo ... bp_tree_display.i
 	@echo ... bp_tree_display.s
-	@echo ... bp_tree_insert.obj
-	@echo ... bp_tree_insert.i
-	@echo ... bp_tree_insert.s
 	@echo ... bp_tree_search.obj
 	@echo ... bp_tree_search.i
 	@echo ... bp_tree_search.s

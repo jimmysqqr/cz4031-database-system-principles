@@ -3,8 +3,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/bp_tree.dir/bp_tree.cpp.obj.d"
   "CMakeFiles/bp_tree.dir/bp_tree_display.cpp.obj"
   "CMakeFiles/bp_tree.dir/bp_tree_display.cpp.obj.d"
-  "CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj"
-  "CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj.d"
   "CMakeFiles/bp_tree.dir/bp_tree_search.cpp.obj"
   "CMakeFiles/bp_tree.dir/bp_tree_search.cpp.obj.d"
   "CMakeFiles/bp_tree.dir/bp_tree_utilities.cpp.obj"

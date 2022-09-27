@@ -92,8 +92,8 @@ main_EXTERNAL_OBJECTS =
 
 main.exe: CMakeFiles/main.dir/main.cpp.obj
 main.exe: CMakeFiles/main.dir/build.make
-main.exe: bp_tree/libbp_tree.a
 main.exe: storage/libstorage.a
+main.exe: bp_tree/libbp_tree.a
 main.exe: CMakeFiles/main.dir/linklibs.rsp
 main.exe: CMakeFiles/main.dir/objects1.rsp
 main.exe: CMakeFiles/main.dir/link.txt
