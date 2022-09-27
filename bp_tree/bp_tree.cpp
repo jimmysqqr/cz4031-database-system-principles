@@ -2,10 +2,8 @@
 #include "disk_storage.h"
 #include "helper_types.h"
 
-#include <tuple>
-#include <iostream>
 #include <array>
-#include <unordered_map>
+#include <iostream>
 #include <cstring>
 
 using namespace std;
@@ -16,7 +14,7 @@ bool nullPointer = false;
 // Function to create individual tree node
 TreeNode::TreeNode(int totalDataKey)
 {
-    // Dynamic allocation of a pointer to an array, size of array = total number of data key 
+    // Dynamic allocation of a pointer to an array, size of array = total number of data key
     // float *DataKey = new float[totalDataKey]
     dataKey = new float[totalDataKey];
 
@@ -25,7 +23,7 @@ TreeNode::TreeNode(int totalDataKey)
     pointer = new Address[totalDataKey + 1];
 
     // using a for loop, for each of the pointer in the node, initialise it to NULL
-    for(int i = 0; i < totalDataKey + 1; i++)
+    for (int i = 0; i < totalDataKey + 1; i++)
     {
         Address nullAddress{(void *)nullPointer, 0};
         pointer[i] = nullAddress;
@@ -33,25 +31,25 @@ TreeNode::TreeNode(int totalDataKey)
 
     // initialise the number of key that we have used or "created" for this node to be 0
     // Because we are only creating a node and have not insert any record yet
-    numOfkey = 0;
+    numOfKey = 0;
 }
 
 // Function to create a tree
-BPTree::BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index)
+BPTree::BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index)
 {
-    // Amount fo size left after minusing off size used to keep track if node is a leaf node and number of keys
-    size sizeOfNodeBuffer = blockSize - sizeof(bool) - sizeof(int);
+    // Amount of size left after subtracting off size used to keep track if node is a leaf node (boolean) and number of keys (integer)
+    size_t sizeOfNodeBuffer = blockSize - sizeof(bool) - sizeof(int);
 
-    size sum = sizeof(Address);
+    size_t sum = sizeof(Address);
     totalDataKey = 0;
 
-    while(sum + sizeof(Address) + sizeof(float) <= NodeBufferSize)
+    while (sum + sizeof(Address) + sizeof(float) <= sizeOfNodeBuffer)
     {
         sum += (sizeof(Address) + sizeof(float));
         totalDataKey += 1;
     }
 
-    if(totalDataKey == 0)
+    if (totalDataKey == 0)
     {
         throw std::overflow_error("ERROR! Number of keys and pointers are too large!");
     }
@@ -63,7 +61,7 @@ BPTree::BPTree(std::size blockSize, DiskStorage *disk, DiskStorage *index)
     nodeSize = blockSize;
 
     // At the creation of the tree, number of level and node will be = 0
-    numOflevel = 0;
+    numOfLevel = 0;
     numOfNode = 0;
 
     // Initialisation of disk space for index and set reference to disk
