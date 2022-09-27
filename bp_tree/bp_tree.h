@@ -1,8 +1,8 @@
 #ifndef BP_TREE_H
 #define BP_TREE_H
 
-#include "helper_types.h"
-#include "disk_storage.h"
+#include "../storage/helper_types.h"
+#include "../storage/disk_storage.h"
 
 #include <cstddef>
 #include <array>
@@ -34,10 +34,10 @@ public:
 class BPTree
 {
 private:
-    // Pointer to Disk storage for data block
+    // Pointer to disk storage for data block
     DiskStorage *disk;
 
-    // Pointer to disk storage in the disk
+    // Pointer to disk storage for the index
     DiskStorage *index;
 
     // Pointer to main memory
@@ -88,7 +88,7 @@ public:
     void insert(Address address, float key);
 
     // Search functions that supports a range query on the B+ Tree Index
-    void search(float lower, floar upper);
+    void search(float lower, float upper);
 
     // Function that prints the specified node of the B+ Tree
     void displayNode(TreeNode *node);

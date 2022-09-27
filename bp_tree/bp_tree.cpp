@@ -1,6 +1,6 @@
 #include "bp_tree.h"
-#include "disk_storage.h"
-#include "helper_types.h"
+#include "../storage/disk_storage.h"
+#include "../storage/helper_types.h"
 
 #include <array>
 #include <iostream>
