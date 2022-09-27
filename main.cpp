@@ -76,6 +76,8 @@ int main()
             // Write this record to the disk
             Address address = disk.writeToDisk(&record, sizeof(Record));
 
+            
+
             recordNum++;
         }
         cout << "Number of records: " << recordNum << endl;
@@ -89,18 +91,30 @@ int main()
     cout << "Size of database used by allocated blocks    : " << disk.getTotalDiskUsage() << "B or " << disk.getTotalDiskUsage() / pow(10, 6) << "MB" << endl;
     cout << "Actual size of database used by saved records: " << disk.getDiskUsage() << "B or " << disk.getDiskUsage() / pow(10, 6) << "MB" << endl;
     cout << "__________________________________________________________________________" << endl;
+    
+    // Reset the no. of blocks accessed for the next experiment
+    disk.resetNumBlocksAccessed();
 
     // Experiment 2
     cout << "\n\n============================== Experiment 2 ==============================" << endl;
     cout << "__________________________________________________________________________" << endl;
 
+    // Reset the no. of blocks accessed for the next experiment
+    disk.resetNumBlocksAccessed();
+
     // Experiment 3
     cout << "\n\n============================== Experiment 3 ==============================" << endl;
     cout << "__________________________________________________________________________" << endl;
 
+    // Reset the no. of blocks accessed for the next experiment
+    disk.resetNumBlocksAccessed();
+
     // Experiment 4
     cout << "\n\n============================== Experiment 4 ==============================" << endl;
     cout << "__________________________________________________________________________" << endl;
+
+    // Reset the no. of blocks accessed for the next experiment
+    disk.resetNumBlocksAccessed();
 
     // Experiment 5
     cout << "\n\n============================== Experiment 5 ==============================" << endl;
