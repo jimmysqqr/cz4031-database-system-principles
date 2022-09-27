@@ -7,7 +7,7 @@
 using namespace std;
 
 // Helper function to return the disk address of the immediate parent of the target node
-TreeNode *BPTree::getParent(TreeNode *rootDiskAddress, TreeNode *targetDiskAddress, float lower)
+TreeNode *BPTree::getParent(TreeNode *rootDiskAddress, TreeNode *targetDiskAddress, int lower)
 {
     // Load the pointer into main memory and initialise it to the root
     Address rootAddress{rootDiskAddress, 0};

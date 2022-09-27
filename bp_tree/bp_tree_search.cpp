@@ -8,7 +8,7 @@ using namespace std;
 // We shall implement a function for range queries only. The function can also search a specific key by setting lower = upper = key.
 // In brief the function works by traversing the B+ tree till it finds the first leaf node with a key <= lower.
 // Then it traverse the leaves via the linked list as long as the keys are <= upper.
-void BPTree::search(float lower, float upper)
+void BPTree::search(int lower, int upper)
 {
     // Edge Case, tree is empty
     if (addressOfRoot == nullptr)
