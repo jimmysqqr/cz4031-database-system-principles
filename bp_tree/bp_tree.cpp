@@ -51,7 +51,7 @@ BPTree::BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index)
 
     if (totalDataKey == 0)
     {
-        throw std::overflow_error("ERROR! Number of keys and pointers are too large!");
+        throw overflow_error("ERROR! Number of keys and pointers are too large!");
     }
 
     // Set the address of the root node and root to NULL

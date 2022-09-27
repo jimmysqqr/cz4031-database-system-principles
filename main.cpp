@@ -27,10 +27,18 @@ int main()
         cout << "\nInvalid Block Size, it will default to 200 Bytes" << endl;
         BLOCKSIZE = 200;
     }
-    cout << "Success! Block Size = " << BLOCKSIZE << "B" << endl;
+    cout << "Success! Block Size: " << BLOCKSIZE << "B" << endl;
 
     // Create a 150MB disk
     DiskStorage disk(150000000, BLOCKSIZE);
+
+    // Create a 350MB disk (changeeeeeee)
+    DiskStorage index(350000000, BLOCKSIZE);
+
+    // Creating the tree
+    BPTree bptree = BPTree(BLOCKSIZE, &disk, &index);
+    cout << "Max keys in a node of the B+ tree: " << bptree.getTotalDataKey() << endl;
+    cout << "Height of the B+ tree: " << bptree.getHeight() << endl;
 
     // Reset the no. of blocks accessed
     disk.resetNumBlocksAccessed();

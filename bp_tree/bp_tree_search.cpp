@@ -52,7 +52,7 @@ void BPTree::search(float lower, float upper)
                 if (i == curr->numOfKey - 1)
                 {
                     // Load node from disk into main memory and update curr accordingly
-                    curr = (TreeNode *)index->readFromDisk(curr->pointer[i+1], nodeSize); // Notice i+1 here
+                    curr = (TreeNode *)index->readFromDisk(curr->pointer[i + 1], nodeSize); // Notice i+1 here
 
                     // Display the current node (it was accessed in the search process)
                     cout << "Non-Leaf node accessed. Contents.....";
@@ -90,7 +90,7 @@ void BPTree::search(float lower, float upper)
                     cout << "\nRecords for key: " << curr->dataKey[i] << " -> ";
 
                     // Access the linked list node and print all corresponding records
-                    displayLL(curr->pointer[i]);
+                    displayList(curr->pointer[i]);
                 }
             }
 
