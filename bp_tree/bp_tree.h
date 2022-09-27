@@ -1,8 +1,8 @@
 #ifndef BP_TREE_H
 #define BP_TREE_H
 
-#include "helper_types.h"
-#include "disk_storage.h"
+#include "../storage/helper_types.h"
+#include "../storage/disk_storage.h"
 
 #include <cstddef>
 #include <array>
@@ -81,7 +81,7 @@ public:
     void insert(Address address, float key);
 
     // Search functions that supports a range query on the B+ Tree Index
-    void search(float lower, floar upper);
+    void search(float lower, float upper);
 
     // Function that prints the specified node of the B+ Tree
     void displayNode(TreeNode *node);

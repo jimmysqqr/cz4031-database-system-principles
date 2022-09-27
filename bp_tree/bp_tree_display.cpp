@@ -1,5 +1,5 @@
 #include "bp_tree.h"
-#include "helper_types.h"
+#include "../storage/helper_types.h"
 
 #include <iostream>
 #include <cstring>

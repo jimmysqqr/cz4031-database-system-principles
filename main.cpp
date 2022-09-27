@@ -17,7 +17,17 @@ int main()
 {
     // =============== Read in data and save on disk ======================= //
     // User can set block size
-    int BLOCKSIZE = 200;
+    cout << "Welcome! First enter the Block Size (200 or 500 Bytes): ";
+    int BLOCKSIZE;
+    cin >> BLOCKSIZE;
+
+    // Error handling by setting the Block Size to 200 by default
+    if (BLOCKSIZE != 200 && BLOCKSIZE != 500)
+    {
+        cout << "\nInvalid Block Size, it will default to 200 Bytes" << endl;
+        BLOCKSIZE = 200;
+    }
+    cout << "Success! Block Size = " << BLOCKSIZE << "B" << endl;
 
     // Create a 150MB disk
     DiskStorage disk(150000000, BLOCKSIZE);
@@ -31,7 +41,7 @@ int main()
     // Check if file is open
     if (file.is_open())
     {
-        cout << "Reading in data..." << endl;
+        cout << "\nReading in data..." << endl;
         // Each line in the file will be read into this variable
         string line;
 
@@ -72,11 +82,29 @@ int main()
         file.close();
     }
 
-    // =============== Experiment 1 ======================= //
-    // Completed the disk storage part for experiment 1
-    cout << "Number of blocks used for disk storage: " << disk.getNumBlocksAllocated() << endl;
-    cout << "Size of database used by allocated blocks: " << disk.getTotalDiskUsage() << "B, " << disk.getTotalDiskUsage() / pow(10, 6) << "MB" << endl;
-    cout << "Actual size of database used up by saved records: " << disk.getDiskUsage() << "B, " << disk.getDiskUsage() / pow(10, 6) << "MB" << endl;
+    // Experiment 1
+    cout << "\n\n============================== Experiment 1 ==============================" << endl;
+    cout << "Storing the data on the disk...                " << endl;
+    cout << "\nNumber of blocks used for disk storage     : " << disk.getNumBlocksAllocated() << endl;
+    cout << "Size of database used by allocated blocks    : " << disk.getTotalDiskUsage() << "B or " << disk.getTotalDiskUsage() / pow(10, 6) << "MB" << endl;
+    cout << "Actual size of database used by saved records: " << disk.getDiskUsage() << "B or " << disk.getDiskUsage() / pow(10, 6) << "MB" << endl;
+    cout << "__________________________________________________________________________" << endl;
 
-    // TODO: Add in the blocks used by B+ tree and size of B+ tree
+    // Experiment 2
+    cout << "\n\n============================== Experiment 2 ==============================" << endl;
+    cout << "__________________________________________________________________________" << endl;
+
+    // Experiment 3
+    cout << "\n\n============================== Experiment 3 ==============================" << endl;
+    cout << "__________________________________________________________________________" << endl;
+
+    // Experiment 4
+    cout << "\n\n============================== Experiment 4 ==============================" << endl;
+    cout << "__________________________________________________________________________" << endl;
+
+    // Experiment 5
+    cout << "\n\n============================== Experiment 5 ==============================" << endl;
+    cout << "__________________________________________________________________________" << endl;
+
+    return 0;
 }
