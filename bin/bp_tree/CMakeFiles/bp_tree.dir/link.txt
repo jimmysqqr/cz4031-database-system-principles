@@ -1,0 +1,2 @@
+C:\msys64\mingw64\bin\ar.exe qc libbp_tree.a CMakeFiles/bp_tree.dir/bp_tree.cpp.obj CMakeFiles/bp_tree.dir/bp_tree_utilities.cpp.obj CMakeFiles/bp_tree.dir/bp_tree_display.cpp.obj CMakeFiles/bp_tree.dir/bp_tree_search.cpp.obj CMakeFiles/bp_tree.dir/bp_tree_insert.cpp.obj
+C:\msys64\mingw64\bin\ranlib.exe libbp_tree.a
