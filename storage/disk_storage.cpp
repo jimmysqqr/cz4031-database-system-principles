@@ -10,7 +10,8 @@
 // Refer to the header file for more details about the instance variables and class methods
 
 // =============== Constructor ======================= //
-DiskStorage::DiskStorage(std::size_t maxDiskCapacity, std::size_t blockSize){
+DiskStorage::DiskStorage(std::size_t maxDiskCapacity, std::size_t blockSize)
+{
     this->maxDiskCapacity = maxDiskCapacity;
     this->blockSize = blockSize;
     this->diskUsage = 0;
@@ -25,20 +26,21 @@ DiskStorage::DiskStorage(std::size_t maxDiskCapacity, std::size_t blockSize){
     std::memset(disk, '\0', maxDiskCapacity);
 
     this->currentBlock = nullptr;
-
 };
 
 // =============== Class Methods ======================= //
 // Allocates a block from the disk. Returns false if unsuccessful
-bool DiskStorage::allocateBlock(){
+bool DiskStorage::allocateBlock()
+{
     // Check if disk capacity will be exceeded if a new block is allocated
-    if (totalDiskUsage + blockSize > maxDiskCapacity){
-        std::cout << "Error: Disk is full, cannot allocate a new block: " << totalDiskUsage << "/" << maxDiskCapacity << '\n'; 
+    if (totalDiskUsage + blockSize > maxDiskCapacity)
+    {
+        std::cout << "Error: Disk is full, cannot allocate a new block: " << totalDiskUsage << "/" << maxDiskCapacity << '\n';
         return false;
     }
 
     // Update current block pointer
-    currentBlock = (char *)disk + numBlocksAllocated*blockSize;
+    currentBlock = (char *)disk + numBlocksAllocated * blockSize;
 
     // Reset the usage of the current block
     blockUsage = 0;
@@ -53,17 +55,21 @@ bool DiskStorage::allocateBlock(){
 }
 
 // Allocates a record to one or more blocks. Returns the address where the new record should be inserted
-Address DiskStorage::allocateRecord(std::size_t recordSize){
+Address DiskStorage::allocateRecord(std::size_t recordSize)
+{
     // Check if record size is too large to fit into a block
-    if (recordSize > blockSize){
+    if (recordSize > blockSize)
+    {
         std::cout << "Error: Record size is too large for block. Record size: " << recordSize << ", Block size: " << blockSize << '\n';
         throw std::logic_error("Record size is too large for block");
     }
 
     // If no blocks have been allocated on disk yet, or record can't fit into the current block
-    if (numBlocksAllocated==0 || (blockUsage + recordSize > blockSize)){
+    if (numBlocksAllocated == 0 || (blockUsage + recordSize > blockSize))
+    {
         // Allocate a new block
-        if (!allocateBlock()){
+        if (!allocateBlock())
+        {
             throw std::logic_error("Failed to allocate a new block");
         }
     }
@@ -81,8 +87,10 @@ Address DiskStorage::allocateRecord(std::size_t recordSize){
 };
 
 // Deallocates a record from disk. Returns false if deallocation is unsuccessful
-bool DiskStorage::deallocateRecord(Address address, std::size_t recordSize){
-    try {
+bool DiskStorage::deallocateRecord(Address address, std::size_t recordSize)
+{
+    try
+    {
         // Get the address of the record which is to be deleted
         void *addressOfRecord = (char *)address.blockAddress + address.offset;
 
@@ -98,20 +106,24 @@ bool DiskStorage::deallocateRecord(Address address, std::size_t recordSize){
         memset(temp, '\0', blockSize);
 
         // Compare the temp block with the actual block
-        if (memcmp(temp, address.blockAddress, blockSize)==0){
+        if (memcmp(temp, address.blockAddress, blockSize) == 0)
+        {
             // The actual block is empty, hence update the necessary instance variables
             totalDiskUsage -= blockSize;
-            numBlocksAllocated --;
+            numBlocksAllocated--;
         }
         return true;
-    } catch (...) {
+    }
+    catch (...)
+    {
         std::cout << "Error: Unable to deallocate record at this block address: " << address.blockAddress << ", offset: " << address.offset << '\n';
         return false;
     };
 };
 
 // Reads data from a block on the disk
-void *DiskStorage::readFromDisk(Address address, std::size_t size){
+void *DiskStorage::readFromDisk(Address address, std::size_t size)
+{
     // Malloc some other part of main memory
     void *mainMemAddress = operator new(size);
 
@@ -121,11 +133,12 @@ void *DiskStorage::readFromDisk(Address address, std::size_t size){
     // Update number of blocks accessed
     numBlocksAccessed++;
 
-    return mainMemAddress; 
+    return mainMemAddress;
 };
 
 // Writes something to the disk. Returns the disk address
-Address DiskStorage::writeToDisk(void *srcAddress, std::size_t size){
+Address DiskStorage::writeToDisk(void *srcAddress, std::size_t size)
+{
     // Allocate space on disk and get the destination address
     Address destAddress = allocateRecord(size);
 
@@ -139,7 +152,8 @@ Address DiskStorage::writeToDisk(void *srcAddress, std::size_t size){
 }
 
 // Update data on disk if it has already been saved before
-Address DiskStorage::writeToDisk(void *srcAddress, std::size_t size, Address destAddress){
+Address DiskStorage::writeToDisk(void *srcAddress, std::size_t size, Address destAddress)
+{
     // Copy from src to dest
     std::memcpy((char *)destAddress.blockAddress + destAddress.offset, srcAddress, size);
 
