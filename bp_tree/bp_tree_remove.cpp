@@ -1,8 +1,9 @@
 #include <cstring>
 #include <iostream>
+#include <cmath>
 
 #include "bp_tree.h"
-#include "helper_types.h"
+#include "../storage/helper_types.h"
 
 using namespace std;
 
@@ -116,7 +117,7 @@ int BPTree::remove(float key) {
     // now remove the entire linked list pointed by this key
 
     // get pointer to first record from disk
-    Address *LLheadAddress = currentNode->pointer[keyIdx];
+    Address LLheadAddress = currentNode->pointer[keyIdx];
     TreeNode *LLhead = (TreeNode *)index->readFromDisk(LLheadAddress, nodeSize);
 
     // deallocate current record
@@ -174,7 +175,7 @@ int BPTree::remove(float key) {
             
             // update stats
             numOfNode--;
-            numOflevel--;
+            numOfLevel--;
             numDeletedNodes++;
 
             cout << "Key " << key << " deleted. Root node deleted. B+ tree index is now empty." << endl;
@@ -338,7 +339,7 @@ int BPTree::remove(float key) {
         index->writeToDisk(leftNode, nodeSize, parentNode->pointer[leftSibling]);
 
         //TODO: update parent node
-        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[leftSibling], (TreeNode *)parentDiskAddress, (TreeNode *)currentDiskAddress);
+        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[leftSibling], leftSibling, (TreeNode *)parentDiskAddress, (TreeNode *)currentDiskAddress);
 
         //TODO: delete currentNode from disk
         Address currentNodeAddress = {currentDiskAddress, 0};
@@ -369,13 +370,13 @@ int BPTree::remove(float key) {
 
         //TODO: update parent node
         void *rightDiskAddress = parentNode->pointer[rightSibling].blockAddress;
-        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[rightSibling], (TreeNode *)parentDiskAddress, (TreeNode *)rightDiskAddress);
+        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[rightSibling], rightSibling, (TreeNode *)parentDiskAddress, (TreeNode *)rightDiskAddress);
 
         //TODO: delete rightNode from disk
         Address rightNodeAddress = {rightDiskAddress, 0};
         index->deallocateRecord(rightNodeAddress, nodeSize);
 
-        numDeletedNodes++
+        numDeletedNodes++;
 
     }
 
@@ -405,9 +406,10 @@ int BPTree::recursiveParentUpdate(float key, int keyIdx, TreeNode *currentDiskAd
 
     TreeNode *currentNode = (TreeNode *)index->readFromDisk(currentNodeAddress, nodeSize);
 
-    // TODO: huh, why is this needed?
+    // TODO: huh, why is this needed? it doesnt seem correct
     // check if currentNode is the root
-    if (currentNodeAddress == addressOfRoot) root = currentNode;
+    Address rootTreeAddress = {addressOfRoot, 0};
+    if (currentDiskAddress == root) root = currentNode;
 
     // 2 cases to handle, whether parent node is the root
 
@@ -460,7 +462,7 @@ int BPTree::recursiveParentUpdate(float key, int keyIdx, TreeNode *currentDiskAd
     // may need to delete internal(nodes)
 
     // find parent of this current node to access its siblings
-    TreeNode *parentDiskAddress = FindParent((TreeNode *)addressOfRoot, currentDiskAddress, currentNode->dataKey[0]);
+    TreeNode *parentDiskAddress = getParent((TreeNode *)addressOfRoot, currentDiskAddress, currentNode->dataKey[0]);
     Address parentNodeAddress{parentDiskAddress, 0};
     TreeNode *parentNode = (TreeNode *)index->readFromDisk(parentNodeAddress, nodeSize);
     
@@ -468,7 +470,7 @@ int BPTree::recursiveParentUpdate(float key, int keyIdx, TreeNode *currentDiskAd
     int leftSibling, rightSibling;
 
     for (int i = 0; i < parentNode->numOfKey + 1; i++) {
-        if (parentNode->pointer[i].blockAddress == currentDiskAddress { // TODO: isit just parentNode->pointer[i] = currentNode?
+        if (parentNode->pointer[i].blockAddress == currentDiskAddress) { // TODO: isit just parentNode->pointer[i] = currentNode?
             leftSibling = i - 1;
             rightSibling = i + 1;
             break;
@@ -649,7 +651,7 @@ int BPTree::recursiveParentUpdate(float key, int keyIdx, TreeNode *currentDiskAd
 
         //TODO: update parent node
         void *rightDiskAddress = parentNode->pointer[rightSibling].blockAddress;
-        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[rightSibling], (TreeNode *)parentDiskAddress, (TreeNode *)rightDiskAddress);
+        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[rightSibling], rightSibling, (TreeNode *)parentDiskAddress, (TreeNode *)rightDiskAddress);
 
         //TODO: delete rightNode from disk
         Address rightNodeAddress = {rightDiskAddress, 0};

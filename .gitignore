@@ -1,4 +1,4 @@
-.vscode
+.vscode/
 
 # Prerequisites
 *.d
@@ -32,4 +32,3 @@
 *.exe
 *.out
 *.app
-.vscode/settings.json
