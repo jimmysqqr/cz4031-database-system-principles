@@ -34,10 +34,10 @@ public:
 class BPTree
 {
 private:
-    // Pointer to Disk storage for data block
+    // Pointer to disk storage for data block
     DiskStorage *disk;
 
-    // Pointer to disk storage in the disk
+    // Pointer to disk storage for the index
     DiskStorage *index;
 
     // Pointer to main memory
