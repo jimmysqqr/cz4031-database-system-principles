@@ -75,6 +75,7 @@ class BPTree
         insert(Address address, float key);
 
         int remove(float key);
+        int recursiveParentUpdate(float key, TreeNode *currentDiskAddress, TreeNode *childDiskAddress);
 };
 
 #endif
