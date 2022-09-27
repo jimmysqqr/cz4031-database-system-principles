@@ -3,7 +3,6 @@
 
 #include "../storage/helper_types.h"
 #include "../storage/disk_storage.h"
-
 #include <cstddef>
 #include <array>
 
@@ -98,6 +97,10 @@ public:
 
     // Function that prints the entire linked list (pointed by the leaves)
     void displayList(Address headAddress);
+
+    int remove(float key);
+
+    int recursiveParentUpdate(float key, int keyIdx, TreeNode *currentDiskAddress, TreeNode *childDiskAddress);
 };
 
 #endif
