@@ -147,7 +147,7 @@ void BPTree::insertKey(Address address, int key)
 
             // Create temporary list for keys and pointers
             float tempKeyList[totalDataKey + 1];
-            float tempPointerList[totalDataKey + 1];
+            Address tempPointerList[totalDataKey + 1];
 
             // Initialize next node
             Address nextNode = curNode->pointer[curNode->numOfKey];
@@ -322,7 +322,7 @@ Address BPTree::insertLL(Address curNodeAddress, Address address, int key)
         nodeLL->pointer[0] = address;
 
         // Insert previous node disk address as next
-        nodeLL->pointer[1] = curNode;
+        nodeLL->pointer[1] = curNodeAddress;
 
         // Write new linked list to disk
         Address nodeLLAddress = index->writeToDisk((void *)nodeLL, nodeSize);
@@ -437,7 +437,7 @@ void BPTree::insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDis
         }
 
         // Insert new keys into new parent node
-        for (i = 0, j = curNode->numOfKey + 1; i < newParentNode->numOfKey; i++, j++)
+        for (int i = 0, j = curNode->numOfKey + 1; i < newParentNode->numOfKey; i++, j++)
         {
             newParentNode->pointer[i] = tempPointerList[j];
         }
