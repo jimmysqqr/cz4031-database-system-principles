@@ -61,6 +61,9 @@ private:
     // Helper function to return the disk address of the immediate parent of the target node
     TreeNode *getParent(TreeNode *rootDiskAddress, TreeNode *targetDiskAddress, float lower);
 
+    // Inserts new parent or updates parent in the tree with child nodes
+    insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDiskAddress, float key);
+
 public:
     // Constructor
     BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index);
@@ -75,6 +78,10 @@ public:
     {
         return totalDataKey;
     }
+
+    insertKey(Address address, float key);
+
+    insertLL(Address headLL, Address address, float key);
 
     int getHeight();
 
