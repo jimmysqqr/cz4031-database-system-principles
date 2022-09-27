@@ -79,13 +79,13 @@ public:
         return totalDataKey;
     }
 
-    insertKey(Address address, float key);
-
-    insertLL(Address headLL, Address address, float key);
-
     int getHeight();
 
     void insert(Address address, float key);
+
+    void insertKey(Address address, float key);
+
+    Address insertLL(Address headLL, Address address, float key);
 
     // Search functions that supports a range query on the B+ Tree Index
     void search(float lower, float upper);
