@@ -6,9 +6,9 @@
 #include <iostream>
 
 // Function to insert data into nodes
-void BPTree::insertKey(Address address, float key)
+void BPTree::insertKey(Address address, int key)
 {
-    if (addressOfRoot == = nullptr)
+    if (addressOfRoot == nullptr)
     {
 
         TreeNode *nodeLL = new TreeNode(totalDataKey);
@@ -279,7 +279,7 @@ void BPTree::insertKey(Address address, float key)
 }
 
 // Function to insert record into existing linked list
-Address BPTree::insertLL(Address curNodeAddress, Address address, float key)
+Address BPTree::insertLL(Address curNodeAddress, Address address, int key)
 {
 
     TreeNode *curNode = (TreeNode *)index->readFromDisk(curNodeAddress, nodeSize);
@@ -333,7 +333,7 @@ Address BPTree::insertLL(Address curNodeAddress, Address address, float key)
 // Function to update parent nodes
 // Add new parent nodes if needed
 // Update child nodes respectively
-void BPTree::insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDiskAddress, float key)
+void BPTree::insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDiskAddress, int key)
 {
 
     // Get latest parent and child from disk

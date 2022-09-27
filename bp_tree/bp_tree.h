@@ -14,7 +14,7 @@ private:
     Address *pointer;
 
     // Pointer to array of data keys in this tree node
-    float *dataKey;
+    int *dataKey;
 
     // Used to keep track the number of data keys we have or have "created" so far
     int numOfKey;
@@ -58,10 +58,13 @@ private:
     std::size_t nodeSize;
 
     // Helper function to return the disk address of the immediate parent of the target node
-    TreeNode *getParent(TreeNode *rootDiskAddress, TreeNode *targetDiskAddress, float lower);
+    TreeNode *getParent(TreeNode *rootDiskAddress, TreeNode *targetDiskAddress, int lower);
 
     // Inserts new parent or updates parent in the tree with child nodes
-    insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDiskAddress, float key);
+    void insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDiskAddress, int key);
+
+    // Function that recursively updates the parent due to the removal of a lower level node in the B+ tree
+    int recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddress, TreeNode *childDiskAddress);
 
 public:
     // Constructor
@@ -80,14 +83,14 @@ public:
 
     int getHeight();
 
-    void insert(Address address, float key);
+    void insert(Address address, int key);
 
-    void insertKey(Address address, float key);
+    void insertKey(Address address, int key);
 
-    Address insertLL(Address headLL, Address address, float key);
+    Address insertLL(Address headLL, Address address, int key);
 
     // Search functions that supports a range query on the B+ Tree Index
-    void search(float lower, float upper);
+    void search(int lower, int upper);
 
     // Function that prints the specified node of the B+ Tree
     void displayNode(TreeNode *node);
@@ -98,9 +101,9 @@ public:
     // Function that prints the entire linked list (pointed by the leaves)
     void displayList(Address headAddress);
 
-    int remove(float key);
-
-    int recursiveParentUpdate(float key, int keyIdx, TreeNode *currentDiskAddress, TreeNode *childDiskAddress);
+    // Function that deletes a key from the B+ tree
+    int remove(int key);
+    
 };
 
 #endif

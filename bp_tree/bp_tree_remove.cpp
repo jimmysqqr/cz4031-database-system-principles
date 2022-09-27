@@ -9,7 +9,7 @@ using namespace std;
 
 // Function to delete records of a certain key
 // Returns no. of tree nodes deleted
-int BPTree::remove(float key) {
+int BPTree::remove(int key) {
     // tree is empty
     if (addressOfRoot == nullptr) {
         // throw std::logic_error("Deletion failed: Tree is empty.");
@@ -52,7 +52,7 @@ int BPTree::remove(float key) {
 
         for (int i = 0; i < numNodeKeys; i++) {
 
-            float currentKey = currentNode->dataKey[i];
+            int currentKey = currentNode->dataKey[i];
 
             // update index of left and right sibling
             leftSibling = i - 1;
@@ -396,7 +396,7 @@ int BPTree::remove(float key) {
 // From the perspective of the parent, update its contents after removal of a child node
 // Parent node has been assigned as the current node
 // returns number of deleted nodes
-int BPTree::recursiveParentUpdate(float key, int keyIdx, TreeNode *currentDiskAddress, TreeNode *childDiskAddress) {
+int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddress, TreeNode *childDiskAddress) {
 
     int numDeletedNodes = 0;
 
