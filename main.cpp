@@ -37,7 +37,7 @@ int main()
 
     // Creating the tree
     BPTree bptree = BPTree(BLOCKSIZE, &disk, &index);
-    cout << "\nMax keys in a node of the B+ tree: " << bptree.getTotalDataKey() << endl;
+    cout << "\nMax keys in node of B+ tree (n): " << bptree.getTotalDataKey() << endl;
     cout << "Height of the B+ tree: " << bptree.getHeight() << endl;
 
     // Reset the no. of blocks accessed
@@ -50,6 +50,8 @@ int main()
     if (file.is_open())
     {
         cout << "\nReading in data..." << endl;
+        cout << "Building B+ Index simultaneously..." << endl;
+
         // Each line in the file will be read into this variable
         string line;
 
@@ -84,18 +86,21 @@ int main()
             // Write this record to the disk
             Address address = disk.writeToDisk(&record, sizeof(Record));
 
+            // Building B+ tree index on numVotes by inserting the records sequentially
+            bptree.insertKey(address, record.numVotes);
+
             recordNum++;
         }
-        cout << "Number of records: " << recordNum << endl;
+        cout << "Number of records read: " << recordNum << endl;
         file.close();
     }
 
     // Experiment 1
     cout << "\n\n============================== Experiment 1 ==============================" << endl;
-    cout << "Storing the data on the disk...                " << endl;
-    cout << "\nNumber of blocks used for disk storage     : " << disk.getNumBlocksAllocated() << endl;
-    cout << "Size of database used by allocated blocks    : " << disk.getTotalDiskUsage() << "B or " << disk.getTotalDiskUsage() / pow(10, 6) << "MB" << endl;
-    cout << "Actual size of database used by saved records: " << disk.getDiskUsage() << "B or " << disk.getDiskUsage() / pow(10, 6) << "MB" << endl;
+    cout << "Storing the data on the disk...                  " << endl;
+    cout << "\nNumber of blocks used for disk storage       : " << disk.getNumBlocksAllocated() << endl;
+    cout << "Size of database used by allocated blocks      : " << disk.getTotalDiskUsage() << "B or " << disk.getTotalDiskUsage() / pow(10, 6) << "MB" << endl;
+    cout << "Actual size of database used by saved records  : " << disk.getDiskUsage() << "B or " << disk.getDiskUsage() / pow(10, 6) << "MB" << endl;
     cout << "__________________________________________________________________________" << endl;
 
     // Reset the no. of blocks accessed for the next experiment
@@ -103,6 +108,10 @@ int main()
 
     // Experiment 2
     cout << "\n\n============================== Experiment 2 ==============================" << endl;
+    cout << "B+ Tree was constructed on numVotes. Parameters...       " << endl;
+    cout << "\nParameter n of the B+ Tree   : " << bptree.getTotalDataKey() << endl;
+    cout << "Number of nodes of the B+ tree : " << bptree.getNumOfNodes() << endl;
+    cout << "Height of the B+ tree          : " << bptree.getHeight() << endl;
     cout << "__________________________________________________________________________" << endl;
 
     // Reset the no. of blocks accessed for the next experiment

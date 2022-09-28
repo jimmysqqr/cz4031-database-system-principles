@@ -77,12 +77,14 @@ void BPTree::displayBlock(void *blockAddress)
 }
 
 // Function that prints the entire linked list (pointed by the leaves)
+// It also computes and displays the average of “averageRating’s” of the records that are returned
 void BPTree::displayList(Address headAddress)
 {
     // Load the head of the linked list into main memory.
     TreeNode *head = (TreeNode *)index->readFromDisk(headAddress, nodeSize);
 
-    // Iterate through linked list and print all records stored in it
+    // Computing the average of “averageRating’s” of the records that are returned
+    float average = 0.0;
     for (int i = 0; i < head->numOfKey; i++)
     {
 
@@ -90,14 +92,8 @@ void BPTree::displayList(Address headAddress)
         displayBlock(head->pointer[i].blockAddress);
         cout << endl;
 
-        Record result = *(Record *)(disk->readFromDisk(head->pointer[i], sizeof(Record)));
-        cout << result.tconst << " | ";
-    }
-
-    // Print empty slots
-    for (int i = head->numOfKey; i < totalDataKey; i++)
-    {
-        cout << "\t|";
+        Record record = *(Record *)(disk->readFromDisk(head->pointer[i], sizeof(Record)));
+        average += record.averageRating;
     }
 
     // If we reach the end of the linked list return

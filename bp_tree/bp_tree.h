@@ -81,12 +81,16 @@ public:
         return totalDataKey;
     }
 
+    // Helper function that returns the height of the B+ Tree Index
     int getHeight();
 
-    void insert(Address address, int key);
+    // Function that deletes a key from the B+ tree
+    int remove(int key);
 
+    // Function that inserts data into nodes of B+ tree
     void insertKey(Address address, int key);
 
+    // Function to insert record into existing linked list
     Address insertLL(Address headLL, Address address, int key);
 
     // Search functions that supports a range query on the B+ Tree Index
@@ -100,10 +104,6 @@ public:
 
     // Function that prints the entire linked list (pointed by the leaves)
     void displayList(Address headAddress);
-
-    // Function that deletes a key from the B+ tree
-    int remove(int key);
-    
 };
 
 #endif

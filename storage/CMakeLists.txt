@@ -1,3 +1,4 @@
-add_library(storage
+add_library(
+    storage
     disk_storage.cpp
-    )
+)

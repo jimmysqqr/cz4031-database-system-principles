@@ -30,6 +30,7 @@ void BPTree::insertKey(Address address, int key)
         // Get disk address after writing to disk and assign it to addressOfRoot
         addressOfRoot = index->writeToDisk(root, nodeSize).blockAddress;
     }
+
     // Else if root exists, traverse the nodes to find proper place to insert key
     else
     {
@@ -138,6 +139,7 @@ void BPTree::insertKey(Address address, int key)
                 index->writeToDisk(curNode, nodeSize, curNodeOriginalAddress);
             }
         }
+
         // If there is no space to insert new key, split the node into two and update the parent if required
         else
         {
@@ -276,6 +278,7 @@ void BPTree::insertKey(Address address, int key)
     }
 
     numOfNode = index->getNumBlocksAllocated();
+
 }
 
 // Function to insert record into existing linked list
@@ -379,6 +382,7 @@ void BPTree::insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDis
         // Write updated parent to disk
         index->writeToDisk(curNode, nodeSize, curNodeAddress);
     }
+    
     // Else if parent node does not have space, split parent node and insert more parent nodes
     else
     {
