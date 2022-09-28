@@ -95,7 +95,7 @@ void BPTree::search(int lower, int upper)
             }
 
             // Only continue iterating if the leaf node is not the last one (meaning the last pointer of the node points to another leaf node and isn't null)
-            // Also check if the key is still within hte range
+            // Also check if the key is still within the range
             if (curr->pointer[curr->numOfKey].blockAddress != nullptr && curr->dataKey[curr->numOfKey] <= upper)
             {
                 // Load node from disk into main memory and update curr accordingly

@@ -18,8 +18,8 @@ int main()
     // =============== Read in data and save on disk ======================= //
     // User can set the block size
     cout << "Welcome! First enter the Block Size (200 or 500 Bytes): ";
-    int BLOCKSIZE;
-    cin >> BLOCKSIZE;
+    int BLOCKSIZE = 200;
+    // cin >> BLOCKSIZE;
 
     // Error handling by setting the Block Size to 200 by default
     if (BLOCKSIZE != 200 && BLOCKSIZE != 500)

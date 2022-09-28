@@ -270,15 +270,16 @@ void BPTree::insertKey(Address address, int key)
                 addressOfRoot = newParentRootAddress.blockAddress;
                 root = newParentRoot;
             }
+
             // If curNode is not root, insert a new parent in the middle levels of the trees
             else
             {
+                insertUpdateParent((TreeNode *)parentDiskAddress, (TreeNode *)newLeafAddress.blockAddress, newLeafNode->dataKey[0]);
             }
         }
     }
 
     numOfNode = index->getNumBlocksAllocated();
-
 }
 
 // Function to insert record into existing linked list
@@ -382,7 +383,7 @@ void BPTree::insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDis
         // Write updated parent to disk
         index->writeToDisk(curNode, nodeSize, curNodeAddress);
     }
-    
+
     // Else if parent node does not have space, split parent node and insert more parent nodes
     else
     {

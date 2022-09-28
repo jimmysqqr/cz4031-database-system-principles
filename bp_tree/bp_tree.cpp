@@ -40,6 +40,7 @@ BPTree::BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index)
     // Amount of size left after subtracting off size used to keep track if node is a leaf node (boolean) and number of keys (integer)
     size_t sizeOfNodeBuffer = blockSize - sizeof(bool) - sizeof(int);
 
+    // Left pointer in node
     size_t sum = sizeof(Address);
     totalDataKey = 0;
 

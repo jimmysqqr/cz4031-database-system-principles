@@ -94,6 +94,7 @@ void BPTree::displayList(Address headAddress)
 
         Record record = *(Record *)(disk->readFromDisk(head->pointer[i], sizeof(Record)));
         average += record.averageRating;
+        // TODOOOOOOOOO
     }
 
     // If we reach the end of the linked list return

@@ -75,7 +75,8 @@ Address DiskStorage::allocateRecord(std::size_t recordSize)
     }
 
     // Return the address where the new record should be inserted, in the form of {blockAddress, offset}
-    Address recordAddress = {currentBlock, blockUsage};
+    int temp = static_cast<int>(blockUsage); // To prevent any lossy conversion warnings
+    Address recordAddress = {currentBlock, temp};
 
     // Update the block usage, which is how much of the current block has already been used
     blockUsage += recordSize;
