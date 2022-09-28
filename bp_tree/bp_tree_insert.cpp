@@ -6,9 +6,9 @@
 #include <iostream>
 
 // Function to insert data into nodes
-void BPTree::insertKey(Address address, float key)
+void BPTree::insertKey(Address address, int key)
 {
-    if (addressOfRoot == = nullptr)
+    if (addressOfRoot == nullptr)
     {
 
         TreeNode *nodeLL = new TreeNode(totalDataKey);
@@ -147,7 +147,7 @@ void BPTree::insertKey(Address address, float key)
 
             // Create temporary list for keys and pointers
             float tempKeyList[totalDataKey + 1];
-            float tempPointerList[totalDataKey + 1];
+            Address tempPointerList[totalDataKey + 1];
 
             // Initialize next node
             Address nextNode = curNode->pointer[curNode->numOfKey];
@@ -279,7 +279,7 @@ void BPTree::insertKey(Address address, float key)
 }
 
 // Function to insert record into existing linked list
-Address BPTree::insertLL(Address curNodeAddress, Address address, float key)
+Address BPTree::insertLL(Address curNodeAddress, Address address, int key)
 {
 
     TreeNode *curNode = (TreeNode *)index->readFromDisk(curNodeAddress, nodeSize);
@@ -322,7 +322,7 @@ Address BPTree::insertLL(Address curNodeAddress, Address address, float key)
         nodeLL->pointer[0] = address;
 
         // Insert previous node disk address as next
-        nodeLL->pointer[1] = curNode;
+        nodeLL->pointer[1] = curNodeAddress;
 
         // Write new linked list to disk
         Address nodeLLAddress = index->writeToDisk((void *)nodeLL, nodeSize);
@@ -333,7 +333,7 @@ Address BPTree::insertLL(Address curNodeAddress, Address address, float key)
 // Function to update parent nodes
 // Add new parent nodes if needed
 // Update child nodes respectively
-void BPTree::insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDiskAddress, float key)
+void BPTree::insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDiskAddress, int key)
 {
 
     // Get latest parent and child from disk
@@ -437,7 +437,7 @@ void BPTree::insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDis
         }
 
         // Insert new keys into new parent node
-        for (i = 0, j = curNode->numOfKey + 1; i < newParentNode->numOfKey; i++, j++)
+        for (int i = 0, j = curNode->numOfKey + 1; i < newParentNode->numOfKey; i++, j++)
         {
             newParentNode->pointer[i] = tempPointerList[j];
         }
@@ -492,7 +492,7 @@ void BPTree::insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDis
         else
         {
             // GET PARENT AND CALL RECURSIVELY
-            TreeNode *parentAddress = FindParent((TreeNode *)addressOfRoot, curNodeDiskAddress, curNode->dataKey[0]);
+            TreeNode *parentAddress = getParent((TreeNode *)addressOfRoot, curNodeDiskAddress, curNode->dataKey[0]);
 
             insertUpdateParent(parentAddress, (TreeNode *)newParentDiskAddress.blockAddress, tempKeyList[curNode->numOfKey]);
         }

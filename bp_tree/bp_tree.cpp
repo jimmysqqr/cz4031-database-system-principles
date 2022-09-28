@@ -16,7 +16,7 @@ TreeNode::TreeNode(int totalDataKey)
 {
     // Dynamic allocation of a pointer to an array, size of array = total number of data key
     // float *DataKey = new float[totalDataKey]
-    dataKey = new float[totalDataKey];
+    dataKey = new int[totalDataKey];
 
     // Dynamic allocation of a pointer to an array, size of array = total number of data key + 1
     // Address *pointer = new Address[totalDataKey]
