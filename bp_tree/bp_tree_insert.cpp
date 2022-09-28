@@ -273,6 +273,7 @@ void BPTree::insertKey(Address address, int key)
             // If curNode is not root, insert a new parent in the middle levels of the trees
             else
             {
+                insertUpdateParent((TreeNode *)parentDiskAddress,(TreeNode *)newLeafAddress.blockAddress ,newLeafNode->dataKey[0]);
             }
         }
     }
