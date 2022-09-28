@@ -22,6 +22,7 @@ DiskStorage::DiskStorage(std::size_t maxDiskCapacity, std::size_t blockSize)
 
     // Reserve part of the main memory for the "disk". operator new is basically similar to malloc
     this->disk = operator new(maxDiskCapacity);
+
     // Reserve memory by setting everything to null
     std::memset(disk, '\0', maxDiskCapacity);
 
@@ -75,8 +76,7 @@ Address DiskStorage::allocateRecord(std::size_t recordSize)
     }
 
     // Return the address where the new record should be inserted, in the form of {blockAddress, offset}
-    int temp = static_cast<int>(blockUsage); // To prevent any lossy conversion warnings
-    Address recordAddress = {currentBlock, temp};
+    Address recordAddress = {currentBlock, static_cast<int>(blockUsage)}; // To prevent any lossy conversion warnings
 
     // Update the block usage, which is how much of the current block has already been used
     blockUsage += recordSize;
