@@ -84,7 +84,6 @@ void BPTree::displayList(Address headAddress)
     TreeNode *head = (TreeNode *)index->readFromDisk(headAddress, nodeSize);
 
     // Computing the average of “averageRating’s” of the records that are returned
-    float average = 0.0;
     for (int i = 0; i < head->numOfKey; i++)
     {
 
@@ -93,8 +92,8 @@ void BPTree::displayList(Address headAddress)
         cout << endl;
 
         Record record = *(Record *)(disk->readFromDisk(head->pointer[i], sizeof(Record)));
-        average += record.averageRating;
-        // TODOOOOOOOOO
+        sumOfAverageRating += record.averageRating;
+        numOfRecordsRetrieved += 1;
     }
 
     // If we reach the end of the linked list return

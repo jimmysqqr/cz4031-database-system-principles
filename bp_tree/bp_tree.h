@@ -57,6 +57,12 @@ private:
     // Size of a node in the tree, which is also equal to the size of a block
     std::size_t nodeSize;
 
+    // Tracks the sum of 'averageRating' of records retrieved in search function
+    float sumOfAverageRating;
+
+    // Tracks the num of 'averageRating' of records retrieved in search function
+    int numOfRecordsRetrieved;
+
     // Helper function to return the disk address of the immediate parent of the target node
     TreeNode *getParent(TreeNode *rootDiskAddress, TreeNode *targetDiskAddress, int lower);
 
@@ -79,6 +85,11 @@ public:
     int getTotalDataKey()
     {
         return totalDataKey;
+    }
+
+    float getAverageOfAverageRatings()
+    {
+        return sumOfAverageRating / numOfRecordsRetrieved;
     }
 
     // Helper function that returns the height of the B+ Tree Index

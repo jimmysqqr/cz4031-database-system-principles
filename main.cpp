@@ -119,6 +119,8 @@ int main()
 
     // Experiment 3
     cout << "\n\n============================== Experiment 3 ==============================" << endl;
+    // Displaying the average of “averageRating’s” of the records that are returned
+    cout << "Average of 'averageRating' attribute of records retrirved : " << bptree.getAverageOfAverageRatings() << endl;
     cout << "__________________________________________________________________________" << endl;
 
     // Reset the no. of blocks accessed for the next experiment

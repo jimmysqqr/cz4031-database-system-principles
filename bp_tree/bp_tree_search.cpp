@@ -69,6 +69,10 @@ void BPTree::search(int lower, int upper)
         // Flag indicating whether we're within range (current key < upper)
         bool flag = true;
 
+        // Reset the variables that help us return the average 'averageRating'
+        sumOfAverageRating = 0.0;
+        numOfRecordsRetrieved = 0;
+
         while (flag)
         {
             for (int i = 0; i < curr->numOfKey; i++)
