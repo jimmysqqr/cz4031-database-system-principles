@@ -11,15 +11,15 @@ using namespace std;
 // Returns no. of tree nodes deleted
 int BPTree::remove(int key) {
     // tree is empty
-    if (addressOfRoot == nullptr) {
+    if (root == nullptr) {
         // throw std::logic_error("Deletion failed: Tree is empty.");
         cout << "Deletion failed: Tree is empty." << endl;
         return 0;
     }
 
     // load root node from disk into main memory
-    Address addressOfRootDisk{addressOfRoot, 0};
-    root = (TreeNode *)index->readFromDisk(addressOfRootDisk, nodeSize);
+    // Address addressOfRootDisk{addressOfRoot, 0};
+    // root = (TreeNode *)index->readFromDisk(addressOfRootDisk, nodeSize);
 
     // initalize current node for traversing
     TreeNode *currentNode = root;
@@ -28,10 +28,10 @@ int BPTree::remove(int key) {
     TreeNode *parentNode;
 
     // keep track of current node's disk address in case of updates
-    void *currentDiskAddress = addressOfRoot;
+    // void *currentDiskAddress = addressOfRoot;
 
     // keep track of parent's disk address in case of updates
-    void *parentDiskAddress = addressOfRoot;
+    // void *parentDiskAddress = addressOfRoot;
 
     // keep track of index of left and right sibling to borrow a key
     // they will be index of the parentNode (parent of currentNode)
@@ -48,7 +48,7 @@ int BPTree::remove(int key) {
 
         // set parent node and disk address in case of updates
         parentNode = currentNode;
-        parentDiskAddress = currentDiskAddress;
+        // parentDiskAddress = currentDiskAddress;
 
         for (int i = 0; i < numNodeKeys; i++) {
 
@@ -61,8 +61,7 @@ int BPTree::remove(int key) {
             // if key is smaller than current key, then follow its (left)
             if (key < currentKey) {
                 // load current node from disk into main mem
-                TreeNode *tempNode = (TreeNode *)index->readFromDisk(
-                    currentNode->pointer[i], nodeSize);
+                TreeNode *tempNode = (TreeNode *)index->readFromDisk(currentNode->pointer[i], nodeSize);
 
                 // store current node's disk address in case of updates
                 currentDiskAddress = currentNode->pointer[i].blockAddress;
@@ -196,7 +195,7 @@ int BPTree::remove(int key) {
     
     // (2) leaf node, no rules violated
     // check if leaf node has minimum of floor((n+1)/2) keys
-    if (currentNode->numOfKey >= floor((totalDataKey + 1) / 2)) {
+    if (currentNode->numOfKey >= floor((maxDataKey + 1) / 2)) {
         // write updated node to disk
         Address currentNodeAddress = {currentDiskAddress, 0};
         index->writeToDisk(currentNode, nodeSize, currentNodeAddress);

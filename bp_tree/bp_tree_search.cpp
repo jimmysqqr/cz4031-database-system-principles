@@ -11,7 +11,7 @@ using namespace std;
 void BPTree::search(int lower, int upper)
 {
     // Edge Case, tree is empty
-    if (addressOfRoot == nullptr)
+    if (root == nullptr)
     {
         throw logic_error("Tree is empty!");
     }

@@ -11,8 +11,10 @@ class TreeNode
 private:
     // pointer to the next node
     // total number of pointer will be = total number of data keys + 1
-    Address *pointer;
-
+    // pointer to array of void pointers
+    void **pointer; // will be either an array of TreeNode pointers (internal nodes) or ListNode pointers (leaf nodes)
+    // Address *pointer;
+    
     // Pointer to array of data keys in this tree node
     int *dataKey;
 
@@ -30,23 +32,33 @@ public:
     TreeNode(int totalDataKey);
 };
 
+class ListNode 
+{
+public:
+    ListNode *next;
+    Address *recordAddress;
+    
+    // Constructor for a ListNode
+    ListNode(Address *recordAddress);
+};
+
 class BPTree
 {
 private:
     // Pointer to disk storage for data block
-    DiskStorage *disk;
+    // DiskStorage *disk;
 
     // Pointer to disk storage for the index
-    DiskStorage *index;
+    // DiskStorage *index;
 
     // Pointer to main memory
     TreeNode *root;
 
     // Pointer to root's address on the disk
-    void *addressOfRoot;
+    // void *addressOfRoot;
 
-    // Total number of data key in the node
-    int totalDataKey;
+    // Max number of keys a node in the B+ tree can hold
+    int maxDataKey;
 
     // Number of level in the B+ tree
     int numOfLevel;
@@ -82,9 +94,9 @@ public:
         return numOfNode;
     }
 
-    int getTotalDataKey()
+    int getMaxDataKey()
     {
-        return totalDataKey;
+        return maxDataKey;
     }
 
     float getAverageOfAverageRatings()
@@ -102,7 +114,7 @@ public:
     void insertKey(Address address, int key);
 
     // Function to insert record into existing linked list
-    Address insertLL(Address headLL, Address address, int key);
+    void insertListNode(ListNode* head, Address address, int key);
 
     // Search functions that supports a range query on the B+ Tree Index
     void search(int lower, int upper);
