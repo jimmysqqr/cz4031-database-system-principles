@@ -76,7 +76,7 @@ private:
     int numOfRecordsRetrieved;
 
     // Helper function to return the disk address of the immediate parent of the target node
-    TreeNode *getParent(TreeNode *rootDiskAddress, TreeNode *targetDiskAddress, int lower);
+    TreeNode *getParent(TreeNode *root, TreeNode *targetNode, int lower);
 
     // Inserts new parent or updates parent in the tree with child nodes
     void insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDiskAddress, int key);

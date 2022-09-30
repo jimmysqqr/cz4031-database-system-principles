@@ -117,7 +117,8 @@ int BPTree::remove(int key) {
     // get pointer to first record from disk
     // Address LLheadAddress = currentNode->pointer[keyIdx];
     // TreeNode *LLhead = (TreeNode *)index->readFromDisk(LLheadAddress, nodeSize);
-    ListNode *LLhead = (ListNode *)currentNode->pointer[keyIdx];
+    ListNode *headListNode = (ListNode *)currentNode->pointer[keyIdx];
+    ListNode *tempListNode = headListNode;
 
     // deallocate current record
     // index->deallocateRecord(LLheadAddress, nodeSize);
@@ -129,14 +130,18 @@ int BPTree::remove(int key) {
     //     LLhead = (TreeNode *)index->readFromDisk(LLheadAddress, nodeSize);
     //     index->deallocateRecord(LLheadAddress, nodeSize);
     // }
-    while (LLhead->recordAddress != nullptr)
-    {
-        LLhead = LLhead->pointer[LLhead->numOfKey];
-        LLhead = (TreeNode *)index->readFromDisk(LLheadAddress, nodeSize);
-        index->deallocateRecord(LLheadAddress, nodeSize);
+
+    // keep accessing the next ListNode to deallocate it
+    while (headListNode->next != nullptr) {
+        tempListNode = headListNode->next;
+        free(headListNode);
+        headListNode = tempListNode;
     }
 
-    // we have deleted the records pointed by the key
+    // deallocate the last ListNode that points to NULL
+    free(headListNode);
+
+    // we have deleted the linked list pointed by the key
     // now delete the key in the leaf node by moving all keys & pointers forward
 
     // (currentNode->numOfKey-1) has "-1" in order to not index out of range
@@ -172,11 +177,12 @@ int BPTree::remove(int key) {
         // check whether the root node is empty
         if (root->numOfKey == 0) {
             // deallocate root node
-            index->deallocateRecord(addressOfRootDisk, nodeSize);
+            // index->deallocateRecord(addressOfRootDisk, nodeSize);
+            free(root);
 
             // set root pointers to NULL
             root = nullptr;
-            addressOfRoot = nullptr;
+            // addressOfRoot = nullptr;
             
             // update stats
             numOfNode--;
@@ -191,8 +197,8 @@ int BPTree::remove(int key) {
         // no stats to update
 
         // write updated node to disk
-        Address currentNodeAddress = {currentDiskAddress, 0};
-        index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
+        // Address currentNodeAddress = {currentDiskAddress, 0};
+        // index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
 
         cout << "Key " << key << " in root node deleted." << endl;
 
@@ -203,8 +209,8 @@ int BPTree::remove(int key) {
     // check if leaf node has minimum of floor((n+1)/2) keys
     if (currentNode->numOfKey >= floor((maxDataKey + 1) / 2)) {
         // write updated node to disk
-        Address currentNodeAddress = {currentDiskAddress, 0};
-        index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
+        // Address currentNodeAddress = {currentDiskAddress, 0};
+        // index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
 
         // no stats to update
 
@@ -219,8 +225,8 @@ int BPTree::remove(int key) {
     // check if left sibling exists
     if (leftSibling >= 0) {
         // load left sibling from disk into main mem
-        TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
-
+        // TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
+        TreeNode *leftNode = (TreeNode *)parentNode->pointer[leftSibling];
         // check if borrowing a key from left sibling is legal
         if (leftNode->numOfKey >= floor((maxDataKey + 1) / 2)) {
 
@@ -250,11 +256,11 @@ int BPTree::remove(int key) {
             parentNode->dataKey[leftSibling] = currentNode->dataKey[0];
 
             // write updated current, left, and parent nodes to disk
-            Address currentNodeAddress = {currentDiskAddress, 0};
-            Address parentNodeAddress = {parentDiskAddress, 0};
-            index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
-            index->writeToDisk(leftNode, nodeSize, parentNode->pointer[leftSibling]);
-            index->writeToDisk(parentNode, nodeSize, parentNodeAddress);
+            // Address currentNodeAddress = {currentDiskAddress, 0};
+            // Address parentNodeAddress = {parentDiskAddress, 0};
+            // index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
+            // index->writeToDisk(leftNode, nodeSize, parentNode->pointer[leftSibling]);
+            // index->writeToDisk(parentNode, nodeSize, parentNodeAddress);
 
             cout << "Key " << key << " in leaf node deleted." << endl;
             cout << "Borrowed key " << currentNode->dataKey[0] << " from left node." << endl;
@@ -272,7 +278,8 @@ int BPTree::remove(int key) {
     // check if right sibling exists
     if (rightSibling <= parentNode->numOfKey && rightSibling >= 0) {
         // load right sibling from disk into main mem
-        TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
+        // TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
+        TreeNode *rightNode = (TreeNode *)parentNode->pointer[rightSibling];
 
         // check if borrowing a key from right sibling is legal
         if (rightNode->numOfKey >= floor((maxDataKey + 1) / 2)) {
@@ -300,11 +307,11 @@ int BPTree::remove(int key) {
             }
 
             // write updated current, right, and parent nodes to disk
-            Address currentNodeAddress = {currentDiskAddress, 0};
-            Address parentNodeAddress = {parentDiskAddress, 0};
-            index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
-            index->writeToDisk(rightNode, nodeSize, parentNode->pointer[rightSibling]);
-            index->writeToDisk(parentNode, nodeSize, parentNodeAddress);
+            // Address currentNodeAddress = {currentDiskAddress, 0};
+            // Address parentNodeAddress = {parentDiskAddress, 0};
+            // index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
+            // index->writeToDisk(rightNode, nodeSize, parentNode->pointer[rightSibling]);
+            // index->writeToDisk(parentNode, nodeSize, parentNodeAddress);
 
             cout << "Key " << key << " in leaf node deleted." << endl;
             cout << "Borrowed key " << currentNode->dataKey[currentNode->numOfKey-1] << " from right node." << endl;
@@ -324,7 +331,8 @@ int BPTree::remove(int key) {
     // check if left sibling exists
     if (leftSibling >= 0) {
         // load left sibling from disk into main mem
-        TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
+        // TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
+        TreeNode *leftNode = (TreeNode *)parentNode->pointer[leftSibling];
 
         // merge left and current node by migrating currentNode content into leftNode
         int l = leftNode->numOfKey;
@@ -341,20 +349,21 @@ int BPTree::remove(int key) {
         leftNode->pointer[leftNode->numOfKey] = currentNode->pointer[currentNode->numOfKey];
 
         // write updated leftNode to disk
-        index->writeToDisk(leftNode, nodeSize, parentNode->pointer[leftSibling]);
+        // index->writeToDisk(leftNode, nodeSize, parentNode->pointer[leftSibling]);
 
         //TODO: update parent node
-        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[leftSibling], leftSibling, (TreeNode *)parentDiskAddress, (TreeNode *)currentDiskAddress);
+        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[leftSibling], leftSibling, (TreeNode *)parentNode, (TreeNode *)currentNode);
 
         //TODO: delete currentNode from disk
-        Address currentNodeAddress = {currentDiskAddress, 0};
-        index->deallocateRecord(currentNodeAddress, nodeSize);
+        // Address currentNodeAddress = {currentDiskAddress, 0};
+        // index->deallocateRecord(currentNodeAddress, nodeSize);
 
         numDeletedNodes++;
 
     } else if (rightSibling <= parentNode->numOfKey && rightSibling >= 0) { // check if right sibling exists
         // load right sibling from disk into main mem
-        TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
+        // TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
+        TreeNode *rightNode = (TreeNode *)parentNode->pointer[rightSibling];
 
         // merge right and current node by migrating rightNode content into currentNode
         int c = currentNode->numOfKey;
@@ -371,15 +380,15 @@ int BPTree::remove(int key) {
         currentNode->pointer[currentNode->numOfKey] = rightNode->pointer[rightNode->numOfKey];
 
         // write updated currentNode to disk
-        index->writeToDisk(currentNode, nodeSize, parentNode->pointer[rightSibling]);
+        // index->writeToDisk(currentNode, nodeSize, parentNode->pointer[rightSibling]);
 
-        //TODO: update parent node
-        void *rightDiskAddress = parentNode->pointer[rightSibling].blockAddress;
-        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[rightSibling], rightSibling, (TreeNode *)parentDiskAddress, (TreeNode *)rightDiskAddress);
+        // update parent node
+        // void *rightDiskAddress = parentNode->pointer[rightSibling].blockAddress;
+        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[rightSibling], rightSibling, (TreeNode *)parentNode, (TreeNode *)rightNode);
 
-        //TODO: delete rightNode from disk
-        Address rightNodeAddress = {rightDiskAddress, 0};
-        index->deallocateRecord(rightNodeAddress, nodeSize);
+        // delete rightNode from disk
+        // Address rightNodeAddress = {rightDiskAddress, 0};
+        // index->deallocateRecord(rightNodeAddress, nodeSize);
 
         numDeletedNodes++;
 
@@ -401,20 +410,20 @@ int BPTree::remove(int key) {
 // From the perspective of the parent, update its contents after removal of a child node
 // Parent node has been assigned as the current node
 // returns number of deleted nodes
-int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddress, TreeNode *childDiskAddress) {
+int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentNode, TreeNode *childNode) {
 
     int numDeletedNodes = 0;
 
     // load parent/current and child nodes from disk into main mem
-    Address currentNodeAddress = {currentDiskAddress, 0};
-    Address childNodeAddress = {childDiskAddress, 0};
+    // Address currentNodeAddress = {currentDiskAddress, 0};
+    // Address childNodeAddress = {childDiskAddress, 0};
 
-    TreeNode *currentNode = (TreeNode *)index->readFromDisk(currentNodeAddress, nodeSize);
+    // TreeNode *currentNode = (TreeNode *)index->readFromDisk(currentNodeAddress, nodeSize);
 
     // TODO: huh, why is this needed? it doesnt seem correct
     // check if currentNode is the root
-    Address rootTreeAddress = {addressOfRoot, 0};
-    if (currentDiskAddress == root) root = currentNode;
+    // Address rootTreeAddress = {addressOfRoot, 0};
+    if (currentNode == root) root = currentNode;
 
     // 2 cases to handle, whether parent node is the root
 
@@ -424,14 +433,11 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
     if (currentNode == root && currentNode->numOfKey == 1) {
 
         // delete childNode
-        index->deallocateRecord(childNodeAddress, nodeSize);
+        // index->deallocateRecord(childNodeAddress, nodeSize);
 
         // set parent's left/right child node as the new root
-        root = (TreeNode *)index->readFromDisk(currentNode->pointer[keyIdx], nodeSize);
-        addressOfRoot = (TreeNode *)currentNode->pointer[keyIdx].blockAddress;
-
-        // delete old root/currentNode
-        index->deallocateRecord(currentNodeAddress, nodeSize);
+        root = (TreeNode *)currentNode->pointer[keyIdx];
+        // addressOfRoot = (TreeNode *)currentNode->pointer[keyIdx].blockAddress;
 
         cout << "Root node was replaced." << endl;
 
@@ -467,15 +473,15 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
     // may need to delete internal(nodes)
 
     // find parent of this current node to access its siblings
-    TreeNode *parentDiskAddress = getParent((TreeNode *)addressOfRoot, currentDiskAddress, currentNode->dataKey[0]);
-    Address parentNodeAddress{parentDiskAddress, 0};
-    TreeNode *parentNode = (TreeNode *)index->readFromDisk(parentNodeAddress, nodeSize);
+    TreeNode *parentNode = getParent(root, currentNode, currentNode->dataKey[0]);
+    // Address parentNodeAddress{parentDiskAddress, 0};
+    // TreeNode *parentNode = (TreeNode *)index->readFromDisk(parentNodeAddress, nodeSize);
     
     // find left and right sibling of currentNode
     int leftSibling, rightSibling;
 
     for (int i = 0; i < parentNode->numOfKey + 1; i++) {
-        if (parentNode->pointer[i].blockAddress == currentDiskAddress) { // TODO: isit just parentNode->pointer[i] = currentNode?
+        if (parentNode->pointer[i] = currentNode) {
             leftSibling = i - 1;
             rightSibling = i + 1;
             break;
@@ -489,7 +495,8 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
     if (leftSibling >= 0)
     {
         // load left sibling from disk into main mem
-        TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
+        // TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
+        TreeNode *leftNode = (TreeNode *)parentNode->pointer[leftSibling];
 
         // check if borrowing a key from left sibling is legal
         if (leftNode->numOfKey >= floor(maxDataKey / 2)) {
@@ -522,11 +529,11 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
             // leftNode->pointer[currentNode->numOfKey] = leftNode->pointer[currentNode->numOfKey + 1];
 
             // write updated current, left, and parent nodes to disk
-            Address currentNodeAddress = {currentDiskAddress, 0};
-            Address parentNodeAddress = {parentDiskAddress, 0};
-            index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
-            index->writeToDisk(leftNode, nodeSize, parentNode->pointer[leftSibling]);
-            index->writeToDisk(parentNode, nodeSize, parentNodeAddress);
+            // Address currentNodeAddress = {currentDiskAddress, 0};
+            // Address parentNodeAddress = {parentDiskAddress, 0};
+            // index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
+            // index->writeToDisk(leftNode, nodeSize, parentNode->pointer[leftSibling]);
+            // index->writeToDisk(parentNode, nodeSize, parentNodeAddress);
 
             cout << "Borrowed key " << currentNode->dataKey[0] << " from left node." << endl;
 
@@ -542,7 +549,8 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
     // check if right sibling exists
     if (rightSibling <= parentNode->numOfKey && rightSibling >= 0) {
         // load right sibling from disk into main mem
-        TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
+        // TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
+        TreeNode *rightNode = (TreeNode *)parentNode->pointer[rightSibling];
 
         // check if borrowing a key from right sibling is legal
         if (rightNode->numOfKey >= floor(maxDataKey / 2)) {
@@ -572,11 +580,11 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
             rightNode->numOfKey--;
 
             // write updated current, right, and parent nodes to disk
-            Address currentNodeAddress = {currentDiskAddress, 0};
-            Address parentNodeAddress = {parentDiskAddress, 0};
-            index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
-            index->writeToDisk(rightNode, nodeSize, parentNode->pointer[rightSibling]);
-            index->writeToDisk(parentNode, nodeSize, parentNodeAddress);
+            // Address currentNodeAddress = {currentDiskAddress, 0};
+            // Address parentNodeAddress = {parentDiskAddress, 0};
+            // index->writeToDisk(currentNode, nodeSize, currentNodeAddress);
+            // index->writeToDisk(rightNode, nodeSize, parentNode->pointer[rightSibling]);
+            // index->writeToDisk(parentNode, nodeSize, parentNodeAddress);
 
             cout << "Borrowed key " << currentNode->dataKey[currentNode->numOfKey-1] << " from right node." << endl;
 
@@ -597,7 +605,8 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
     // check if left sibling exists
     if (leftSibling >= 0) {
         // load left sibling from disk into main mem
-        TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
+        // TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
+        TreeNode *leftNode = (TreeNode *)parentNode->pointer[leftSibling];
 
         // move parent node key of the left sibling into the left node
         leftNode->dataKey[leftNode->numOfKey] = parentNode->dataKey[leftSibling];
@@ -618,20 +627,21 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
         leftNode->pointer[leftNode->numOfKey] = currentNode->pointer[currentNode->numOfKey];
 
         // write updated leftNode to disk
-        index->writeToDisk(leftNode, nodeSize, parentNode->pointer[leftSibling]);
+        // index->writeToDisk(leftNode, nodeSize, parentNode->pointer[leftSibling]);
 
         //TODO: update parent node
-        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[leftSibling], leftSibling, (TreeNode *)parentDiskAddress, (TreeNode *)currentDiskAddress);
+        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[leftSibling], leftSibling, (TreeNode *)parentNode, (TreeNode *)currentNode);
 
-        //TODO: delete currentNode from disk
-        Address currentNodeAddress = {currentDiskAddress, 0};
-        index->deallocateRecord(currentNodeAddress, nodeSize);
+        // delete currentNode from disk
+        // Address currentNodeAddress = {currentDiskAddress, 0};
+        // index->deallocateRecord(currentNodeAddress, nodeSize);
 
         numDeletedNodes++;
 
     } else if (rightSibling <= parentNode->numOfKey && rightSibling >= 0) { // check if right sibling exists
         // load right sibling from disk into main mem
-        TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
+        // TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
+        TreeNode *rightNode = (TreeNode *)parentNode->pointer[rightSibling];
 
         // move parent node key of the left sibling into current node
         currentNode->dataKey[currentNode->numOfKey] = parentNode->dataKey[rightSibling - 1];
@@ -652,15 +662,15 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
         currentNode->pointer[currentNode->numOfKey] = rightNode->pointer[rightNode->numOfKey];
 
         // write updated currentNode to disk
-        index->writeToDisk(currentNode, nodeSize, parentNode->pointer[rightSibling]);
+        // index->writeToDisk(currentNode, nodeSize, parentNode->pointer[rightSibling]);
 
-        //TODO: update parent node
-        void *rightDiskAddress = parentNode->pointer[rightSibling].blockAddress;
-        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[rightSibling], rightSibling, (TreeNode *)parentDiskAddress, (TreeNode *)rightDiskAddress);
+        // update parent node
+        // void *rightDiskAddress = parentNode->pointer[rightSibling].blockAddress;
+        numDeletedNodes += recursiveParentUpdate(parentNode->dataKey[rightSibling], rightSibling, (TreeNode *)parentNode, (TreeNode *)rightNode);
 
-        //TODO: delete rightNode from disk
-        Address rightNodeAddress = {rightDiskAddress, 0};
-        index->deallocateRecord(rightNodeAddress, nodeSize);
+        // delete rightNode from disk
+        // Address rightNodeAddress = {rightDiskAddress, 0};
+        // index->deallocateRecord(rightNodeAddress, nodeSize);
 
         numDeletedNodes++;
     }
