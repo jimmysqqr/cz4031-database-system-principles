@@ -7,7 +7,7 @@
 using namespace std;
 
 // Function that prints the specified node of the B+ Tree
-void BPTree::displayNode(TreeNode *curr)
+void BPTree::displayNode(TreeNode *curr) 
 {
     // First let's print all filled keys and pointers
     cout << "[ ";
@@ -78,7 +78,7 @@ void BPTree::displayBlock(void *blockAddress)
 
 // Function that prints the entire linked list (pointed by the leaves)
 // It also computes and displays the average of “averageRating’s” of the records that are returned
-void BPTree::displayList(Address headAddress)
+void BPTree::displayList(Address headAddress) // should be ListNode *
 {
     // Load the head of the linked list into main memory.
     TreeNode *head = (TreeNode *)index->readFromDisk(headAddress, nodeSize);

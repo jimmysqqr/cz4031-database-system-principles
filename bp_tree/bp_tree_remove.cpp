@@ -43,14 +43,14 @@ int BPTree::remove(int key) {
 
     // find the node - while not leaf node, traverse the tree
     while (!currentNode->isLeaf) {
+
         // traverse the keys
-        int numNodeKeys = currentNode->numOfKey;
 
         // set parent node and disk address in case of updates
         parentNode = currentNode;
         // parentDiskAddress = currentDiskAddress;
 
-        for (int i = 0; i < numNodeKeys; i++) {
+        for (int i = 0; i < currentNode->numOfKey; i++) {
 
             int currentKey = currentNode->dataKey[i];
 
@@ -61,32 +61,31 @@ int BPTree::remove(int key) {
             // if key is smaller than current key, then follow its (left)
             if (key < currentKey) {
                 // load current node from disk into main mem
-                TreeNode *tempNode = (TreeNode *)index->readFromDisk(currentNode->pointer[i], nodeSize);
+                // TreeNode *tempNode = (TreeNode *)index->readFromDisk(currentNode->pointer[i], nodeSize);
 
                 // store current node's disk address in case of updates
-                currentDiskAddress = currentNode->pointer[i].blockAddress;
+                // currentDiskAddress = currentNode->pointer[i].blockAddress;
 
                 // traverse to node at next level
-                currentNode = tempNode;
+                currentNode = (TreeNode *)currentNode->pointer[i];
                 break;
             }
 
             // if key is bigger than all keys, then follow the rightmost pointer
-            if (i == numNodeKeys - 1) {
+            if (i == currentNode->numOfKey - 1) {
 
                 // update index of left and right sibling
                 leftSibling = i;
                 rightSibling = i + 2; // or use -1 bcos no right sibling //TODO
 
                 // load tree node from disk into main mem
-                TreeNode *tempNode = (TreeNode *)index->readFromDisk(
-                    currentNode->pointer[i + 1], nodeSize);
+                // TreeNode *tempNode = (TreeNode *)index->readFromDisk(currentNode->pointer[i + 1], nodeSize);
 
                 // store current node's disk address in case of updates
-                currentDiskAddress = currentNode->pointer[i + 1].blockAddress;
+                // currentDiskAddress = currentNode->pointer[i + 1].blockAddress;
 
                 // traverse to node at next level
-                currentNode = tempNode;
+                currentNode = (TreeNode *)currentNode->pointer[i + 1];
                 break;
             }
         }
@@ -116,16 +115,23 @@ int BPTree::remove(int key) {
     // now remove the entire linked list pointed by this key
 
     // get pointer to first record from disk
-    Address LLheadAddress = currentNode->pointer[keyIdx];
-    TreeNode *LLhead = (TreeNode *)index->readFromDisk(LLheadAddress, nodeSize);
+    // Address LLheadAddress = currentNode->pointer[keyIdx];
+    // TreeNode *LLhead = (TreeNode *)index->readFromDisk(LLheadAddress, nodeSize);
+    ListNode *LLhead = (ListNode *)currentNode->pointer[keyIdx];
 
     // deallocate current record
-    index->deallocateRecord(LLheadAddress, nodeSize);
+    // index->deallocateRecord(LLheadAddress, nodeSize);
 
     // keep accessing the next node to deallocate it
-    while (LLhead->pointer[LLhead->numOfKey].blockAddress != nullptr)
+    // while (LLhead->pointer[LLhead->numOfKey].blockAddress != nullptr)
+    // {
+    //     LLheadAddress = LLhead->pointer[LLhead->numOfKey];
+    //     LLhead = (TreeNode *)index->readFromDisk(LLheadAddress, nodeSize);
+    //     index->deallocateRecord(LLheadAddress, nodeSize);
+    // }
+    while (LLhead->recordAddress != nullptr)
     {
-        LLheadAddress = LLhead->pointer[LLhead->numOfKey];
+        LLhead = LLhead->pointer[LLhead->numOfKey];
         LLhead = (TreeNode *)index->readFromDisk(LLheadAddress, nodeSize);
         index->deallocateRecord(LLheadAddress, nodeSize);
     }
@@ -147,8 +153,8 @@ int BPTree::remove(int key) {
 
     // TODO: check whether we need to set every pointer from the last key, bcos every pointer after this one should alr be NULL
     // remove the pointer near the last key, +1 to access the previously occupied pointer
-    Address nullAddr{nullptr, 0};
-    currentNode->pointer[currentNode->numOfKey+1] = nullAddr;
+    // Address nullAddr{nullptr, 0};
+    currentNode->pointer[currentNode->numOfKey+1] = nullptr;
 
     // we have deleted the key from the leaf node
     // now re-organise the B+ tree by following 2 rules
@@ -216,7 +222,7 @@ int BPTree::remove(int key) {
         TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
 
         // check if borrowing a key from left sibling is legal
-        if (leftNode->numOfKey >= floor((totalDataKey + 1) / 2)) {
+        if (leftNode->numOfKey >= floor((maxDataKey + 1) / 2)) {
 
             // insert rightmost key of leftNode into first position of currentNode
 
@@ -269,7 +275,7 @@ int BPTree::remove(int key) {
         TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
 
         // check if borrowing a key from right sibling is legal
-        if (rightNode->numOfKey >= floor((totalDataKey + 1) / 2)) {
+        if (rightNode->numOfKey >= floor((maxDataKey + 1) / 2)) {
 
             // insert first key of rightNode into last position of currentNode
 
@@ -455,7 +461,7 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
 
     // check if internal node has minimum of floor(n/2) keys or floor(n/2)+1 pointers
     // if so, no more recursions needed
-    if (currentNode->numOfKey >= floor(totalDataKey / 2)) return 1;
+    if (currentNode->numOfKey >= floor(maxDataKey / 2)) return 1;
 
     // (2) current/parent node is NOT root AND violates rules
     // may need to delete internal(nodes)
@@ -486,7 +492,7 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
         TreeNode *leftNode = (TreeNode *)index->readFromDisk(parentNode->pointer[leftSibling], nodeSize);
 
         // check if borrowing a key from left sibling is legal
-        if (leftNode->numOfKey >= floor(totalDataKey / 2)) {
+        if (leftNode->numOfKey >= floor(maxDataKey / 2)) {
 
             // insert rightmost key of leftNode into first position of currentNode
 
@@ -539,7 +545,7 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentDiskAddr
         TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
 
         // check if borrowing a key from right sibling is legal
-        if (rightNode->numOfKey >= floor(totalDataKey / 2)) {
+        if (rightNode->numOfKey >= floor(maxDataKey / 2)) {
 
             // insert first key of rightNode into last position of currentNode
 

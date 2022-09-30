@@ -20,8 +20,8 @@ void BPTree::search(int lower, int upper)
     else
     {
         // Load the root node from disk into main memory
-        Address rootDiskAddress{addressOfRoot, 0};
-        root = (TreeNode *)index->readFromDisk(rootDiskAddress, nodeSize);
+        // Address rootDiskAddress{addressOfRoot, 0};
+        // root = (TreeNode *)index->readFromDisk(rootDiskAddress, nodeSize);
 
         // Display the root (it was accessed in the search process)
         cout << "Root accessed. Contents.....";
@@ -39,7 +39,8 @@ void BPTree::search(int lower, int upper)
                 if (lower < curr->dataKey[i])
                 {
                     // Load node from disk into main memory and update curr accordingly
-                    curr = (TreeNode *)index->readFromDisk(curr->pointer[i], nodeSize);
+                    // curr = (TreeNode *)index->readFromDisk(curr->pointer[i], nodeSize);
+                    curr = (TreeNode *)curr->pointer[i];
 
                     // Display the current node (it was accessed in the search process)
                     cout << "Non-Leaf node accessed. Contents.....";
@@ -52,7 +53,8 @@ void BPTree::search(int lower, int upper)
                 if (i == curr->numOfKey - 1)
                 {
                     // Load node from disk into main memory and update curr accordingly
-                    curr = (TreeNode *)index->readFromDisk(curr->pointer[i + 1], nodeSize); // Notice i+1 here
+                    //curr = (TreeNode *)index->readFromDisk(curr->pointer[i + 1], nodeSize); // Notice i+1 here
+                    curr = (TreeNode *)curr->pointer[i+1];
 
                     // Display the current node (it was accessed in the search process)
                     cout << "Non-Leaf node accessed. Contents.....";
@@ -64,7 +66,7 @@ void BPTree::search(int lower, int upper)
         }
 
         // We have now hit the leaf node with the first key that is withing the range.
-        // We shall now traverse the linked list and display the records with their key within the range.
+        // We shall now traverse the linked list of TreeNOdes (lowest level of B+ tree) and display the records with their key within the range.
 
         // Flag indicating whether we're within range (current key < upper)
         bool flag = true;
@@ -94,16 +96,17 @@ void BPTree::search(int lower, int upper)
                     cout << "\nRecords for key: " << curr->dataKey[i] << " -> ";
 
                     // Access the linked list node and print all corresponding records
-                    displayList(curr->pointer[i]);
+                    displayList((ListNode *)curr->pointer[i]);
                 }
             }
 
             // Only continue iterating if the leaf node is not the last one (meaning the last pointer of the node points to another leaf node and isn't null)
             // Also check if the key is still within the range
-            if (curr->pointer[curr->numOfKey].blockAddress != nullptr && curr->dataKey[curr->numOfKey] <= upper)
+            if (curr->pointer[curr->numOfKey] != nullptr && curr->dataKey[curr->numOfKey] <= upper)
             {
                 // Load node from disk into main memory and update curr accordingly
-                curr = (TreeNode *)index->readFromDisk(curr->pointer[curr->numOfKey], nodeSize);
+                // curr = (TreeNode *)index->readFromDisk(curr->pointer[curr->numOfKey], nodeSize);
+                curr = (TreeNode *)curr->pointer[curr->numOfKey];
 
                 // Display the current node (it was accessed in the search process)
                 cout << "Leaf node accessed. Contents.....";
