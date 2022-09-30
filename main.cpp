@@ -61,7 +61,7 @@ int main()
         // Flag to check if it is the first line of the tsv
         bool firstLine = true;
 
-        cout << "record | save tconst | save averageRating & numVotes | write record to disk | insert key into tree" << endl;
+        // cout << "record | save tconst | save averageRating & numVotes | write record to disk | insert key into tree" << endl;
 
         while (getline(file, line))
         {
@@ -72,7 +72,7 @@ int main()
                 continue;
             }
 
-            cout << recordNum + 1; // + 1 bcos recordNum starts from 0, only ++ after operation is done
+            // cout << recordNum + 1; // + 1 bcos recordNum starts from 0, only ++ after operation is done
             
             // Data will be saved into a Record
             Record record;
@@ -83,21 +83,25 @@ int main()
             // Saving the tconst value
             strcpy(record.tconst, line.substr(0, line.find("\t")).c_str());
             getline(linestream, data, '\t');
-            cout << "\t\t/";
+            // cout << "\t\t/";
 
             // Saving averageRating and numVotes into the record
             linestream >> record.averageRating >> record.numVotes;
-            cout << "\t\t\t/";
+            // cout << "\t\t\t/";
 
             // Write this record to the disk
             Address address = disk.writeToDisk(&record, sizeof(Record));
-            cout << "\t\t\t/";
+            // cout << "\t\t\t/";
 
             // Building B+ tree index on numVotes by inserting the records sequentially
             bptree.insertKey(address, record.numVotes);
-            cout << "\t\t\t/" << endl;
+            // cout << "\t\t\t/" << endl;
 
             recordNum++;
+
+            if (recordNum % 10000 == 0) {
+                cout << (int)(recordNum/10000) << endl;;
+            }
         }
         cout << "Number of records read: " << recordNum << endl;
         file.close();
