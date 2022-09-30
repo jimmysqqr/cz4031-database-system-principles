@@ -33,6 +33,8 @@ TreeNode::TreeNode(int maxDataKey)
     // initialise the number of key that we have used or "created" for this node to be 0
     // Because we are only creating a node and have not insert any record yet
     numOfKey = 0;
+
+    isLeaf = false;
 }
 
 //Constructor to create a ListNode

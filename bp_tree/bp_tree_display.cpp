@@ -85,21 +85,21 @@ void BPTree::displayList(ListNode *curr)
     ListNode *temp = curr;
 
     // Computing the average of “averageRating’s” of the records that are returned
-    while(temp!=NULL)
+    while(temp!=nullptr)
     {   
         // Get the address of the record
-        Address recordAdd = *temp->recordAddress;
+        Address *recordAdd = temp->recordAddress;
         
         // Use the adress to read the record from the disk
-        Record record = *(Record *)disk->readFromDisk(recordAdd, sizeof(Record));
+        Record *record = disk->readFromDisk(*recordAdd, sizeof(Record));
 
         cout << "\nReading record from Disk. Contents....";
 
         // Print the contents of the record
-        cout << "[ " << record.tconst << " | " << record.averageRating << " | " << record.numVotes << " ]\t";
+        cout << "[ " << record->tconst << " | " << record->averageRating << " | " << record->numVotes << " ]\t";
 
         // Increment the sum of averageRating and numofRecordsRetrieved
-        sumOfAverageRating += record.averageRating;
+        sumOfAverageRating += record->averageRating;
         numOfRecordsRetrieved += 1;
 
         // Increment temp

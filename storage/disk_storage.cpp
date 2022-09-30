@@ -123,10 +123,10 @@ bool DiskStorage::deallocateRecord(Address address, std::size_t recordSize)
 };
 
 // Reads data from a block on the disk
-void *DiskStorage::readFromDisk(Address address, std::size_t size)
+Record *DiskStorage::readFromDisk(Address address, std::size_t size)
 {
     // Malloc some other part of main memory
-    void *mainMemAddress = operator new(size);
+    Record *mainMemAddress = (Record *)operator new(size);
 
     // Simulate retrieving from disk to main memory
     std::memcpy(mainMemAddress, (char *)address.blockAddress + address.offset, size);

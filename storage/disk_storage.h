@@ -4,7 +4,6 @@
 #include "helper_types.h"
 
 #include <vector>
-#include <unordered_map>
 #include <tuple>
 
 class DiskStorage
@@ -83,7 +82,7 @@ public:
     bool deallocateRecord(Address address, std::size_t recordSize);
 
     // Read data from disk
-    void *readFromDisk(Address address, std::size_t size);
+    Record *readFromDisk(Address address, std::size_t size);
 
     // Write data to disk with a source address
     Address writeToDisk(void *srcAddress, std::size_t size);

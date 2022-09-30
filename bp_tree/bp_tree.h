@@ -28,8 +28,8 @@ private:
     friend class BPTree;
 
 public:
-    // Constructor, totalDataKey referes to the number of data keys in a node
-    TreeNode(int totalDataKey);
+    // Constructor, maxDataKey referes to the number of data keys in a node
+    TreeNode(int maxDataKey);
 };
 
 class ListNode 
@@ -79,7 +79,7 @@ private:
     int numOfNodesAccessed;
 
     // Helper function to return the disk address of the immediate parent of the target node
-    TreeNode *getParent(TreeNode *root, TreeNode *targetNode, int lower);
+    TreeNode *getParent(TreeNode *targetNode, int lower);
 
     // Inserts new parent or updates parent in the tree with child nodes
     void insertUpdateParent(TreeNode *curNodeDiskAddress, TreeNode *childDiskAddress, int key);
@@ -115,6 +115,10 @@ public:
         numOfNodesAccessed = 0;
     }
 
+    TreeNode *getRoot() {
+        return this->root;
+    }
+
     // Helper function that returns the height of the B+ Tree Index
     int getHeight();
 
@@ -138,6 +142,7 @@ public:
 
     // Function that prints the entire linked list (pointed by the leaves)
     void displayList(ListNode *leafNode);
+
 };
 
 #endif

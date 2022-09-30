@@ -102,6 +102,8 @@ int main()
             if (recordNum % 10000 == 0) {
                 cout << (int)(recordNum/10000) << endl;;
             }
+
+            if (recordNum == 350) break;
         }
         cout << "Number of records read: " << recordNum << endl;
         file.close();
@@ -132,7 +134,7 @@ int main()
     // Experiment 3
     cout << "\n\n============================== Experiment 3 ==============================" << endl;
     cout << "Retrieve movies with 'numVotes'= 500" << endl;
-    bptree.search(500,500);
+    bptree.search(14,14);
     cout << "Total number of index nodes accessed by the search: " << bptree.getNumIndexNodesAccessed() << endl;
     cout << "Total number of data blocks accessed by the search: " << disk.getNumBlocksAccessed() << endl;
     // Displaying the average of “averageRating’s” of the records that are returned

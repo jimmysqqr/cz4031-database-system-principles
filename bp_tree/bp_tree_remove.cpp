@@ -473,7 +473,7 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentNode, Tr
     // may need to delete internal(nodes)
 
     // find parent of this current node to access its siblings
-    TreeNode *parentNode = getParent(root, currentNode, currentNode->dataKey[0]);
+    TreeNode *parentNode = getParent(currentNode, currentNode->dataKey[0]);
     // Address parentNodeAddress{parentDiskAddress, 0};
     // TreeNode *parentNode = (TreeNode *)index->readFromDisk(parentNodeAddress, nodeSize);
     
