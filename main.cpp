@@ -131,7 +131,7 @@ int main()
 
     // Experiment 3
     cout << "\n\n============================== Experiment 3 ==============================" << endl;
-    cout << "Retrieve movies with 'numVotes'==500" << endl;
+    cout << "Retrieve movies with 'numVotes'= 500" << endl;
     bptree.search(500,500);
     cout << "Total number of index nodes accessed by the search: " << bptree.getNumIndexNodesAccessed() << endl;
     cout << "Total number of data blocks accessed by the search: " << disk.getNumBlocksAccessed() << endl;

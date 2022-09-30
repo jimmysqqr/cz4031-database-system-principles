@@ -67,18 +67,19 @@ void BPTree::search(int lower, int upper)
                 }
             }
         }
-
+        cout << "We hit the leaf node!!!" << curr->isLeaf << endl;
         // We have now hit the leaf node with the first key that is withing the range.
         // We shall now traverse the linked list of TreeNOdes (lowest level of B+ tree) and display the records with their key within the range.
 
         // Flag indicating whether we're within range (current key < upper)
         bool flag = true;
+        numOfNodesAccessed++; //Cuz no matter what 1 leaf node will be accessed
 
         // Reset the variables that help us return the average 'averageRating'
-        sumOfAverageRating = 0.0;
+        sumOfAverageRating = 0.0; 
         numOfRecordsRetrieved = 0;
 
-        while (flag)
+        while (flag) 
         {
             for (int i = 0; i < curr->numOfKey; i++)
             {
@@ -94,7 +95,6 @@ void BPTree::search(int lower, int upper)
                 {
                     // Display the current node (it was accessed in the search process)
                     cout << "Leaf node accessed. Contents.....";
-                    numOfNodesAccessed++;
                     displayNode(curr);
 
                     cout << "\nRecords for key: " << curr->dataKey[i] << " -> ";
@@ -106,7 +106,7 @@ void BPTree::search(int lower, int upper)
 
             // Only continue iterating if the leaf node is not the last one (meaning the last pointer of the node points to another leaf node and isn't null)
             // Also check if the key is still within the range
-            if (curr->pointer[curr->numOfKey] != nullptr && curr->dataKey[curr->numOfKey] <= upper)
+            if (curr->pointer[curr->numOfKey] != nullptr && curr->dataKey[curr->numOfKey-1] <= upper)
             {
                 // Load node from disk into main memory and update curr accordingly
                 // curr = (TreeNode *)index->readFromDisk(curr->pointer[curr->numOfKey], nodeSize);
