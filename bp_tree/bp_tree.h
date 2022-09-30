@@ -46,7 +46,7 @@ class BPTree
 {
 private:
     // Pointer to disk storage for data block
-    // DiskStorage *disk;
+    DiskStorage *disk;
 
     // Pointer to disk storage for the index
     // DiskStorage *index;
@@ -86,7 +86,7 @@ private:
 
 public:
     // Constructor
-    BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index);
+    BPTree(std::size_t blockSize, DiskStorage *disk);
 
     // Getter functions
     int getNumOfNodes()
@@ -123,10 +123,10 @@ public:
     void displayNode(TreeNode *node);
 
     // Function that prints the specified data block and its content
-    void displayBlock(void *blockAddress);
+    //void displayBlock(void *blockAddress);
 
     // Function that prints the entire linked list (pointed by the leaves)
-    void displayList(Address headAddress);
+    void displayList(ListNode *leafNode);
 };
 
 #endif

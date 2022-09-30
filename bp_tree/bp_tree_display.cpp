@@ -13,12 +13,13 @@ void BPTree::displayNode(TreeNode *curr)
     cout << "[ ";
     for (int i = 0; i < curr->numOfKey; i++)
     {
-        cout << curr->pointer[i].blockAddress << " | ";
+        // Previously it was curr->pointer[i].blockAddress 
+        cout << &curr->pointer[i] << " | ";
         cout << curr->dataKey[i] << " | ";
     }
 
-    // For the last filled pointer we must be weary of it being Null
-    void *lastPointer = curr->pointer[curr->numOfKey].blockAddress;
+    // For the last filled pointer we must be wary of it being Null
+    void *lastPointer = (void *)&curr->pointer[curr->numOfKey];
     if (lastPointer == nullptr)
     {
         cout << " NULL ";
@@ -29,7 +30,7 @@ void BPTree::displayNode(TreeNode *curr)
     }
 
     // Printing remaining empty keys/pointers (if any)
-    for (int i = curr->numOfKey; i < totalDataKey; i++)
+    for (int i = curr->numOfKey; i < maxDataKey; i++)
     {
         cout << "|\t";
         cout << "| NULL";
@@ -40,74 +41,70 @@ void BPTree::displayNode(TreeNode *curr)
     return;
 }
 
-// Function that prints the specified data block and its content
-void BPTree::displayBlock(void *blockAddress)
-{
-    // Loading block into memory by creating a shallow copy of it
-    void *currBlock = operator new(nodeSize);
-    memcpy(currBlock, blockAddress, nodeSize);
+// // Function that prints the specified data block and its content
+// void BPTree::displayBlock(void *blockAddress)
+// {
+//     // Loading block into memory by creating a shallow copy of it
+//     void *currBlock = operator new(nodeSize);
+//     memcpy(currBlock, blockAddress, nodeSize);
 
-    unsigned char emptyBlock[nodeSize];
-    memset(emptyBlock, '\0', nodeSize);
+//     unsigned char emptyBlock[nodeSize];
+//     memset(emptyBlock, '\0', nodeSize);
 
-    // Case when current block is empty (note the use of memcmp here)
-    if (memcmp(emptyBlock, currBlock, nodeSize) == 0)
-    {
-        cout << "Block is Empty!" << endl;
-        return;
-    }
+//     // Case when current block is empty (note the use of memcmp here)
+//     if (memcmp(emptyBlock, currBlock, nodeSize) == 0)
+//     {
+//         cout << "Block is Empty!" << endl;
+//         return;
+//     }
 
-    // Iniitializing the loop variable and block pointer
-    size_t i = 0;
-    unsigned char *blockPtr = (unsigned char *)currBlock;
+//     // Iniitializing the loop variable and block pointer
+//     size_t i = 0;
+//     unsigned char *blockPtr = (unsigned char *)currBlock;
 
-    while (i < nodeSize)
-    {
-        // Loading each record into memory by creating a shallow copy of it
-        void *recordAddress = operator new(sizeof(Record));
-        memcpy(recordAddress, blockPtr, sizeof(Record));
-        Record *record = (Record *)recordAddress;
+//     while (i < nodeSize)
+//     {
+//         // Loading each record into memory by creating a shallow copy of it
+//         void *recordAddress = operator new(sizeof(Record));
+//         memcpy(recordAddress, blockPtr, sizeof(Record));
+//         Record *record = (Record *)recordAddress;
 
-        // Formatting the output and incrementing the pointer and loop variable by the record size
-        cout << "[ " << record->tconst << " | " << record->averageRating << " | " << record->numVotes << " ]\t";
-        blockPtr += sizeof(Record);
-        i += sizeof(Record);
-    }
-    return;
-}
+//         // Formatting the output and incrementing the pointer and loop variable by the record size
+//         cout << "[ " << record->tconst << " | " << record->averageRating << " | " << record->numVotes << " ]\t";
+//         blockPtr += sizeof(Record);
+//         i += sizeof(Record);
+//     }
+//     return;
+// }
 
 // Function that prints the entire linked list (pointed by the leaves)
 // It also computes and displays the average of “averageRating’s” of the records that are returned
-void BPTree::displayList(Address headAddress) // should be ListNode *
+void BPTree::displayList(ListNode *curr)
 {
-    // Load the head of the linked list into main memory.
-    TreeNode *head = (TreeNode *)index->readFromDisk(headAddress, nodeSize);
+    // Create a temp variable to traverse the linked list
+    ListNode *temp = curr;
 
     // Computing the average of “averageRating’s” of the records that are returned
-    for (int i = 0; i < head->numOfKey; i++)
-    {
+    while(temp!=NULL)
+    {   
+        // Get the address of the record
+        Address recordAdd = *temp->recordAddress;
+        
+        // Use the adress to read the record from the disk
+        Record record = *(Record *)disk->readFromDisk(recordAdd, sizeof(Record));
 
-        cout << "\nData block accessed. Contents....";
-        displayBlock(head->pointer[i].blockAddress);
-        cout << endl;
+        cout << "\nReading record from Disk. Contents....";
 
-        Record record = *(Record *)(disk->readFromDisk(head->pointer[i], sizeof(Record)));
+        // Print the contents of the record
+        cout << "[ " << record.tconst << " | " << record.averageRating << " | " << record.numVotes << " ]\t";
+
+        // Increment the sum of averageRating and numofRecordsRetrieved
         sumOfAverageRating += record.averageRating;
         numOfRecordsRetrieved += 1;
-    }
 
-    // If we reach the end of the linked list return
-    if (head->pointer[head->numOfKey].blockAddress == nullptr)
-    {
-        cout << "End of linked list" << endl;
-        return;
-    }
-
-    // Else recursively print the next node
-    else
-    {
-        displayList(head->pointer[head->numOfKey]);
-    }
+        // Increment temp
+        temp = temp->next;
+    };
 
     return;
 }

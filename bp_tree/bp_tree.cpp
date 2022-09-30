@@ -43,7 +43,7 @@ ListNode::ListNode(Address *recordAddress)
 }
 
 // Constructor to create a tree
-BPTree::BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index)
+BPTree::BPTree(std::size_t blockSize, DiskStorage *disk)
 {
     // Amount of size left after subtracting off size used to keep track if node is a leaf node (boolean) and number of keys (integer)
     size_t sizeOfNodeBuffer = blockSize - sizeof(bool) - sizeof(int);
@@ -78,6 +78,6 @@ BPTree::BPTree(std::size_t blockSize, DiskStorage *disk, DiskStorage *index)
     numOfRecordsRetrieved = 0;
 
     // Initialisation of disk space for index and set reference to disk
-    // this->disk = disk;
+    this->disk = disk;
     // this->index = index;
 }
