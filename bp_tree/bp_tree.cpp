@@ -76,8 +76,9 @@ BPTree::BPTree(std::size_t blockSize, DiskStorage *disk)
     // At the creation of the tree, the search variables are initialized to 0
     sumOfAverageRating = 0.0;
     numOfRecordsRetrieved = 0;
+    numOfNodesAccessed = 0;
 
     // Initialisation of disk space for index and set reference to disk
     this->disk = disk;
-    // this->index = index;
+    
 }
