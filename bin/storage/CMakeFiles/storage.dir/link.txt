@@ -1,2 +1,0 @@
-C:\msys64\mingw64\bin\ar.exe qc libstorage.a CMakeFiles/storage.dir/disk_storage.cpp.obj
-C:\msys64\mingw64\bin\ranlib.exe libstorage.a

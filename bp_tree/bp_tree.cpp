@@ -20,7 +20,7 @@ TreeNode::TreeNode(int maxDataKey)
 
     // Dynamic allocation of a pointer to an array, size of array = total number of data key + 1
     // Address *pointer = new Address[maxDataKey]
-    pointer = new void*[maxDataKey + 1];
+    pointer = new void *[maxDataKey + 1];
 
     // using a for loop, for each of the pointer in the node, initialise it to NULL
     for (int i = 0; i < maxDataKey + 1; i++)
@@ -34,13 +34,14 @@ TreeNode::TreeNode(int maxDataKey)
     // Because we are only creating a node and have not insert any record yet
     numOfKey = 0;
 
+    // Don't forget to initialize the isLeaf boolean lest we encounter undefined behaviour
     isLeaf = false;
 }
 
-//Constructor to create a ListNode
-ListNode::ListNode(Address *recordAddress) 
+// Constructor to create a ListNode
+ListNode::ListNode(Address recordAddress)
 {
-    this->recordAddress = recordAddress; 
+    this->recordAddress = recordAddress;
     this->next = nullptr;
 }
 
@@ -51,12 +52,12 @@ BPTree::BPTree(std::size_t blockSize, DiskStorage *disk)
     size_t sizeOfNodeBuffer = blockSize - sizeof(bool) - sizeof(int);
 
     // Left pointer in node
-    size_t sum = sizeof(void*);
+    size_t sum = sizeof(void *);
     maxDataKey = 0;
 
-    while (sum + sizeof(void*) + sizeof(int) <= sizeOfNodeBuffer)
+    while (sum + sizeof(void *) + sizeof(int) <= sizeOfNodeBuffer)
     {
-        sum += (sizeof(void*) + sizeof(int));
+        sum += (sizeof(void *) + sizeof(int));
         maxDataKey += 1;
     }
 
@@ -82,5 +83,4 @@ BPTree::BPTree(std::size_t blockSize, DiskStorage *disk)
 
     // Initialisation of disk space for index and set reference to disk
     this->disk = disk;
-    
 }

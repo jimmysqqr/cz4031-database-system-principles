@@ -10,11 +10,10 @@ class TreeNode
 {
 private:
     // pointer to the next node
+    // will be either an array of TreeNode pointers (internal nodes) or ListNode pointers (leaf nodes) {hence the use of void *}
     // total number of pointer will be = total number of data keys + 1
-    // pointer to array of void pointers
-    void **pointer; // will be either an array of TreeNode pointers (internal nodes) or ListNode pointers (leaf nodes)
-    // Address *pointer;
-    
+    void **pointer;
+
     // Pointer to array of data keys in this tree node
     int *dataKey;
 
@@ -32,14 +31,14 @@ public:
     TreeNode(int maxDataKey);
 };
 
-class ListNode 
+class ListNode
 {
 public:
     ListNode *next;
-    Address *recordAddress;
-    
+    Address recordAddress;
+
     // Constructor for a ListNode
-    ListNode(Address *recordAddress);
+    ListNode(Address recordAddress);
 };
 
 class BPTree
@@ -48,14 +47,8 @@ private:
     // Pointer to disk storage for data block
     DiskStorage *disk;
 
-    // Pointer to disk storage for the index
-    // DiskStorage *index;
-
-    // Pointer to main memory
+    // Root of B+ Tree
     TreeNode *root;
-
-    // Pointer to root's address on the disk
-    // void *addressOfRoot;
 
     // Max number of keys a node in the B+ tree can hold
     int maxDataKey;
@@ -75,7 +68,7 @@ private:
     // Tracks the num of 'averageRating' of records retrieved in search function
     int numOfRecordsRetrieved;
 
-    // Tracks the num of index nodes accessed in search function
+    // Tracks the num of index nodes (index blocks) accessed in search function
     int numOfNodesAccessed;
 
     // Helper function to return the disk address of the immediate parent of the target node
@@ -107,15 +100,18 @@ public:
         return sumOfAverageRating / numOfRecordsRetrieved;
     }
 
-    int getNumIndexNodesAccessed(){
+    int getNumIndexNodesAccessed()
+    {
         return numOfNodesAccessed;
     }
 
-    void resetNumIndexNodesAccessed(){
+    void resetNumIndexNodesAccessed()
+    {
         numOfNodesAccessed = 0;
     }
 
-    TreeNode *getRoot() {
+    TreeNode *getRoot()
+    {
         return this->root;
     }
 
@@ -129,7 +125,7 @@ public:
     void insertKey(Address address, int key);
 
     // Function to insert record into existing linked list
-    void insertListNode(ListNode* head, Address address, int key);
+    void insertListNode(ListNode *head, Address address, int key);
 
     // Search functions that supports a range query on the B+ Tree Index
     void search(int lower, int upper);
@@ -137,12 +133,8 @@ public:
     // Function that prints the specified node of the B+ Tree
     void displayNode(TreeNode *node);
 
-    // Function that prints the specified data block and its content
-    //void displayBlock(void *blockAddress);
-
     // Function that prints the entire linked list (pointed by the leaves)
     void displayList(ListNode *leafNode);
-
 };
 
 #endif

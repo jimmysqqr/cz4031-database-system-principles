@@ -6,69 +6,45 @@
 
 using namespace std;
 
-// Helper function to return the disk address of the immediate parent of the target node
-TreeNode *BPTree::getParent(TreeNode *targetNode, int lower)
+// Helper function to return the disk address of the immediate parent of the target node. It leverages a key present in the target node to prune the search.
+TreeNode *BPTree::getParent(TreeNode *targetNode, int key)
 {
-    // Load the pointer into main memory and initialise it to the root
-    // Address rootAddress{rootDiskAddress, 0};
-    // TreeNode *currentNode = (TreeNode *)index->readFromDisk(rootAddress, nodeSize);
-    TreeNode *currentNode = root;
-
-    // Sanity Check, if the root is a leaf node, there would not be any children and consequently no parent
-    if (currentNode->isLeaf)
+    // Sanity Check, if the target is the root. It means the tree has only 1 level and hence no 'parent'.
+    if (targetNode == root)
     {
         return nullptr;
     }
 
-    // The current candidate for the parent (initially the root)
-    // TreeNode *parentDiskAddress = rootDiskAddress;
-    TreeNode *parentNode = currentNode;
+    // Else let us initialize the parent at the root, we shall now check and update it.
+    TreeNode *parent = root;
 
-    while (!currentNode->isLeaf)
+    while (!parent->isLeaf)
     {
-        for (int i = 0; i < currentNode->numOfKey + 1; i++)
+        for (int i = 0; i < parent->numOfKey + 1; i++)
         {
             // If the current candidate node has a pointer, pointing to the target node, it is the immediate parent of the target node
-            // if (currentNode->pointer[i].blockAddress == targetDiskAddress)
-            // {
-            //     return parentDiskAddress;
-            // }
-            if (currentNode == targetNode)
+            if ((TreeNode *)parent->pointer[i] == targetNode)
             {
-                return parentNode;
+                return parent;
             }
         }
 
         // Else we must go down one level, this loop helps us pick the current pointer to follow based on the key.
         // This is in a similar to the search function
-        for (int i = 0; i < currentNode->numOfKey; i++)
+        for (int i = 0; i < parent->numOfKey; i++)
         {
-            if (lower < currentNode->dataKey[i])
+            if (key < parent->dataKey[i])
             {
-                // Update the candidate parent
-                // parentDiskAddress = (TreeNode *)currentNode->pointer[i].blockAddress;
-                parentNode = currentNode;
-
-                // Load the node into the main memory
-                // TreeNode *MainMemoryNode = (TreeNode *)index->readFromDisk(currentNode->pointer[i], nodeSize);
-
                 // Updating the pointer accordingly
-                currentNode = (TreeNode *)currentNode->pointer[i];
+                parent = (TreeNode *)parent->pointer[i];
                 break;
             }
 
             // This is the case where we should follow the rightmost pointer in the node
-            if (i == currentNode->numOfKey - 1)
+            if (i == parent->numOfKey - 1)
             {
-                // Update the candidate parent
-                // parentDiskAddress = (TreeNode *)currentNode->pointer[i + 1].blockAddress;
-                parentNode = currentNode;
-
-                // Load the node into the main memory
-                // TreeNode *MainMemoryNode = (TreeNode *)index->readFromDisk(currentNode->pointer[i + 1], nodeSize);
-
                 // Updating the pointer accordingly
-                currentNode = (TreeNode *)currentNode->pointer[i];
+                parent = (TreeNode *)parent->pointer[i + 1];
                 break;
             }
         }
@@ -86,9 +62,6 @@ int BPTree::getHeight()
         return 0;
     }
 
-    // Load the root node from disk into main memory
-    // Address rootDiskAddress{addressOfRoot, 0};
-    // root = (TreeNode *)index->readFromDisk(rootDiskAddress, nodeSize);
     TreeNode *currentNode = root;
 
     // Initialised to 1 (root)
