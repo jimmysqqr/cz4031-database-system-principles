@@ -36,7 +36,7 @@ int main()
     DiskStorage index(350000000, BLOCKSIZE);
 
     // Creating the tree
-    BPTree bptree = BPTree(BLOCKSIZE, &disk, &index);
+    BPTree bptree = BPTree(BLOCKSIZE, &disk);
     cout << "\nMax keys in node of B+ tree (n): " << bptree.getMaxDataKey() << endl;
     cout << "Height of the B+ tree: " << bptree.getHeight() << endl;
 
@@ -131,12 +131,17 @@ int main()
 
     // Experiment 3
     cout << "\n\n============================== Experiment 3 ==============================" << endl;
+    cout << "Retrieve movies with 'numVotes'==500" << endl;
+    bptree.search(500,500);
+    cout << "Total number of index nodes accessed by the search: " << bptree.getNumIndexNodesAccessed() << endl;
+    cout << "Total number of data blocks accessed by the search: " << disk.getNumBlocksAccessed() << endl;
     // Displaying the average of “averageRating’s” of the records that are returned
-    cout << "Average of 'averageRating' attribute of records retrirved : " << bptree.getAverageOfAverageRatings() << endl;
+    cout << "Average of 'averageRating' attribute of records retrieved: " << bptree.getAverageOfAverageRatings() << endl;
     cout << "__________________________________________________________________________" << endl;
 
-    // Reset the no. of blocks accessed for the next experiment
+    // Reset the no. of blocks and no. of index nodes accessed for the next experiment
     disk.resetNumBlocksAccessed();
+    bptree.resetNumIndexNodesAccessed();
 
     // Experiment 4
     cout << "\n\n============================== Experiment 4 ==============================" << endl;

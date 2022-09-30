@@ -25,6 +25,7 @@ void BPTree::search(int lower, int upper)
 
         // Display the root (it was accessed in the search process)
         cout << "Root accessed. Contents.....";
+        numOfNodesAccessed++;
         displayNode(root);
 
         // Pointer to current node
@@ -44,6 +45,7 @@ void BPTree::search(int lower, int upper)
 
                     // Display the current node (it was accessed in the search process)
                     cout << "Non-Leaf node accessed. Contents.....";
+                    numOfNodesAccessed++;
                     displayNode(curr);
 
                     break;
@@ -58,6 +60,7 @@ void BPTree::search(int lower, int upper)
 
                     // Display the current node (it was accessed in the search process)
                     cout << "Non-Leaf node accessed. Contents.....";
+                    numOfNodesAccessed++;
                     displayNode(curr);
 
                     break;
@@ -91,6 +94,7 @@ void BPTree::search(int lower, int upper)
                 {
                     // Display the current node (it was accessed in the search process)
                     cout << "Leaf node accessed. Contents.....";
+                    numOfNodesAccessed++;
                     displayNode(curr);
 
                     cout << "\nRecords for key: " << curr->dataKey[i] << " -> ";
@@ -110,6 +114,7 @@ void BPTree::search(int lower, int upper)
 
                 // Display the current node (it was accessed in the search process)
                 cout << "Leaf node accessed. Contents.....";
+                numOfNodesAccessed++;
                 displayNode(curr);
             }
 

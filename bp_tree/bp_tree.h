@@ -75,6 +75,9 @@ private:
     // Tracks the num of 'averageRating' of records retrieved in search function
     int numOfRecordsRetrieved;
 
+    // Tracks the num of index nodes accessed in search function
+    int numOfNodesAccessed;
+
     // Helper function to return the disk address of the immediate parent of the target node
     TreeNode *getParent(TreeNode *root, TreeNode *targetNode, int lower);
 
@@ -102,6 +105,14 @@ public:
     float getAverageOfAverageRatings()
     {
         return sumOfAverageRating / numOfRecordsRetrieved;
+    }
+
+    int getNumIndexNodesAccessed(){
+        return numOfNodesAccessed;
+    }
+
+    void resetNumIndexNodesAccessed(){
+        numOfNodesAccessed = 0;
     }
 
     // Helper function that returns the height of the B+ Tree Index
