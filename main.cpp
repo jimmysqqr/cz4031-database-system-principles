@@ -18,7 +18,7 @@ int main()
 {
     // =============== Read in data and save on disk ======================= //
     // User can set the block size
-    cout << "Welcome! First enter '1' or '2' to select the Block Size " << endl; 
+    cout << "Welcome! First enter '1' or '2' to select the Block Size " << endl;
     cout << "(1) 200 Bytes" << endl;
     cout << "(2) 500 Bytes" << endl;
     int input;
@@ -53,7 +53,7 @@ int main()
         cout << "\nReading in data..." << endl;
         cout << "Building B+ Index simultaneously..." << endl;
 
-        cout << "Be patient this takes up to 5 mins, progress below out of 107 units (each unit = 10,000 records):" << endl;
+        cout << "\nBe patient this takes up to 5 mins, progress below out of 107 units (each unit = 10,000 records):" << endl;
         // Each line in the file will be read into this variable
         string line;
 
@@ -63,8 +63,6 @@ int main()
         // Flag to check if it is the first line of the tsv
         bool firstLine = true;
 
-        // multimap<int, Address> bulkLoadList;
-
         while (getline(file, line))
         {
             // Throw away the first line because it is just column names
@@ -73,8 +71,6 @@ int main()
                 firstLine = false;
                 continue;
             }
-
-            // cout << recordNum + 1; // + 1 bcos recordNum starts from 0, only ++ after operation is done
 
             // Data will be saved into a Record
             Record record;
@@ -92,39 +88,24 @@ int main()
             // Write this record to the disk
             Address address = disk.writeToDisk(&record, sizeof(Record));
 
-            // Insert into this multimap first. It maintains a sorted order wrt numVotes
-            // bulkLoadList.insert(pair<int, Address>(record.numVotes, address));
-
             // Building B+ tree index on numVotes by inserting the records sequentially
             bptree.insertKey(address, record.numVotes);
 
             recordNum++;
 
+            // Progress Counter
             if (recordNum % 10000 == 0)
             {
                 cout << (int)(recordNum / 10000) << " ";
-                ;
             }
 
-            // debug
-            if (recordNum == 5000)
-                break;
         }
         cout << "\nNumber of records read: " << recordNum << endl;
         file.close();
-
-        // Iterating through the sorted multimap
-        // multimap<int, Address>::iterator itr;
-        // cout << "Loading sorted records into B+ tree: " << endl;
-        // for (itr = bulkLoadList.begin(); itr != bulkLoadList.end(); ++itr) {
-        //     // Insert into B+ tree in ascending order of numVotes
-        //     bptree.insertKey(itr->second, itr->first);
-        // }
-        cout << endl;
     }
 
     // Experiment 1
-    cout << "\n\n\n============================== Experiment 1 ==============================" << endl;
+    cout << "\n\n============================== Experiment 1 ==============================" << endl;
     cout << "\nStoring the data on the disk...                  " << endl;
     cout << "\nNumber of blocks used for disk storage         : " << disk.getNumBlocksAllocated() << endl;
     cout << "Size of database used by allocated blocks      : " << disk.getTotalDiskUsage() << "B or " << disk.getTotalDiskUsage() / pow(10, 6) << "MB" << endl;
@@ -192,9 +173,11 @@ int main()
     bptree.displayNode(bptree.getRoot()->getFirstChild());
     cout << "__________________________________________________________________________" << endl;
 
-    bptree.displayAllLeafNodes();
+    // Reset the no. of blocks accessed. It's a good habit!
+    disk.resetNumBlocksAccessed();
+    bptree.resetNumIndexNodesAccessed();
 
-    cout << "All experiments done." << endl;
+    cout << "All experiments done. Have a nice day!" << endl;
 
     return 0;
 }
