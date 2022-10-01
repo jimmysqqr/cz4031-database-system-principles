@@ -88,8 +88,14 @@ void BPTree::search(int lower, int upper)
         sumOfAverageRating = 0.0;
         numOfRecordsRetrieved = 0;
 
+        // for expt 4
+        int numOfLeafNodesAccessed = 0;
+
         while (flag)
         {
+            // expt 4
+            if (numOfLeafNodesAccessed == 5) break;
+            
             for (int i = 0; i < curr->numOfKey; i++)
             {
                 // If we've exceeded the range, switch the flag
@@ -106,6 +112,7 @@ void BPTree::search(int lower, int upper)
 
                     // Access the linked list node and print all corresponding records
                     displayList((ListNode *)curr->pointer[i]);
+                    numOfLeafNodesAccessed++;
                 }
             }
 
