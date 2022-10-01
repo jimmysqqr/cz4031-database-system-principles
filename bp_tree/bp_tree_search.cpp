@@ -38,10 +38,16 @@ void BPTree::search(int lower, int upper)
                     curr = (TreeNode *)curr->pointer[i];
 
                     // Display the current node (it was accessed in the search process)
-                    cout << ++numOfNodesAccessed << " - Non-Leaf node accessed. Contents..." << endl;
-                    displayNode(curr);
-
-                    break;
+                    if(!curr->isLeaf){
+                        cout << ++numOfNodesAccessed << " - Non-Leaf node accessed. Contents..." << endl;
+                        displayNode(curr);
+                        break;
+                    }
+                    else {
+                        cout << ++numOfNodesAccessed << " - Leaf node accessed. Contents..." << endl;
+                        displayNode(curr);
+                        break;
+                    }
                 }
 
                 // If lower is larger than all keys, we follow right pointer (rightmost pointer actually!).
@@ -54,18 +60,20 @@ void BPTree::search(int lower, int upper)
                     if(!curr->isLeaf){
                         cout << ++numOfNodesAccessed << " - Non-Leaf node accessed. Contents..." << endl;
                         displayNode(curr);
+                        break;
                     }
                     else {
                         cout << ++numOfNodesAccessed << " - Leaf node accessed. Contents..." << endl;
                         displayNode(curr);
+                        break;
                     }
-
-                    break;
+                    
                 }
             }
         }
 
-        cout << ++numOfNodesAccessed << " - We've reached the leaves!" << endl;
+        cout << " - We've reached the leaves!" << endl;
+
         // We have now hit the leaf node with the first key that is withing the range.
         // We shall now traverse the linked list of TreeNodes (lowest level of B+ tree) and display the records with their key within the range.
 
