@@ -266,6 +266,10 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
     //     root = curNode;
     // }
 
+    if (curNode == childNode) {
+        std::cout << std::endl << "##### ???? #####" << std::endl;
+    }
+
     // If parent (curNode) still has space, add child node as a pointer
     if (curNode->numOfKey < maxDataKey)
     {
@@ -346,12 +350,14 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
         tempKeyList[i] = key;
 
         // Shift temp pointer back 1 space
+        // im not too sure if it's j > i + 1 but seems correct
         for (int j = maxDataKey + 1; j > i + 1; j--)
         {
             tempPointerList[j] = tempPointerList[j - 1];
         }
 
         // Insert new pointer to right of child's key
+        // im not too sure if it's [i + 1] but seems correct
         tempPointerList[i + 1] = childNode;
 
         // // Split nodes into 2. floor(n/2) keys for left node
@@ -392,13 +398,17 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
             newInternalNode->pointer[j] = tempPointerList[i];
         }
 
+        // update numOfKey
+        curNode->numOfKey = leftNodeNumOfKey;
+        newInternalNode->numOfKey = rightNodeNumOfKey;
+
         // Update end pointer of newInternalNode to next node
         newInternalNode->pointer[newInternalNode->numOfKey] = nextNode;
-        newInternalNode->numOfKey = rightNodeNumOfKey;
         newInternalNode->isLeaf = false;
 
         // Assign curNode pointer to new internal address
-        curNode->pointer[curNode->numOfKey] = newInternalNode;
+        // internal nodes should NOT be pointing to each other on the same level
+        // curNode->pointer[curNode->numOfKey] = newInternalNode;
 
         // Update parentNode with these 2 new internal nodes
 
