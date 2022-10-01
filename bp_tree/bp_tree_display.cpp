@@ -52,7 +52,7 @@ void BPTree::displayList(ListNode *head)
     
     int numDisplayed = 0;
 
-    cout << "Traversing the linked list..." << endl;
+    // cout << "Traversing the linked list..." << endl;
 
     // Computing the average of “averageRating’s” of the records that are returned
     while (temp != nullptr)
@@ -76,7 +76,7 @@ void BPTree::displayList(ListNode *head)
     }
 
     // Formatting
-    cout << "\n" << endl;
+    cout << endl;
     return;
 }
 

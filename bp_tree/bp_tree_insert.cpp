@@ -266,20 +266,20 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
     //     root = curNode;
     // }
 
-    if (curNode == childNode) {
-        std::cout << std::endl << "##### ???? #####" << std::endl;
-    }
+    // if (curNode == childNode) {
+    //     std::cout << std::endl << "##### ???? #####" << std::endl;
+    // }
 
     // If parent (curNode) still has space, add child node as a pointer
     if (curNode->numOfKey < maxDataKey)
     {
-        int a;
-        while (a < curNode->numOfKey)
-        {
-            if (key == curNode->dataKey[a])
-                return;
-            a++;
-        }
+        // int a;
+        // while (a < curNode->numOfKey)
+        // {
+        //     if (key == curNode->dataKey[a])
+        //         return;
+        //     a++;
+        // }
 
         // Get index to insert new child node
         int i = 0;

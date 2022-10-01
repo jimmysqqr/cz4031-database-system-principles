@@ -38,8 +38,8 @@ int main()
 
     // Creating the tree
     BPTree bptree = BPTree(BLOCKSIZE, &disk);
-    cout << "\nMax keys in node of B+ tree (n): " << bptree.getMaxDataKey() << endl;
-    cout << "Height of the B+ tree: " << bptree.getHeight() << endl;
+    // cout << "\nMax keys in node of B+ tree (n): " << bptree.getMaxDataKey() << endl;
+    // cout << "Height of the B+ tree: " << bptree.getHeight() << endl;
 
     // Reset the no. of blocks accessed
     disk.resetNumBlocksAccessed();
@@ -107,8 +107,8 @@ int main()
             }
 
             // debug
-            if (recordNum == 5000)
-                break;
+            // if (recordNum == 5000)
+            //     break;
         }
         cout << "\nNumber of records read: " << recordNum << endl;
         file.close();
@@ -128,7 +128,7 @@ int main()
     cout << "\nStoring the data on the disk...                  " << endl;
     cout << "\nNumber of blocks used for disk storage         : " << disk.getNumBlocksAllocated() << endl;
     cout << "Size of database used by allocated blocks      : " << disk.getTotalDiskUsage() << "B or " << disk.getTotalDiskUsage() / pow(10, 6) << "MB" << endl;
-    cout << "Actual size of database used by saved records  : " << disk.getDiskUsage() << "B or " << disk.getDiskUsage() / pow(10, 6) << "MB" << endl;
+    // cout << "Actual size of database used by saved records  : " << disk.getDiskUsage() << "B or " << disk.getDiskUsage() / pow(10, 6) << "MB" << endl;
     cout << "__________________________________________________________________________" << endl;
 
     // Reset the no. of blocks accessed for the next experiment
@@ -140,9 +140,9 @@ int main()
     cout << "\nParameter n of the B+ Tree     : " << bptree.getMaxDataKey() << endl;
     cout << "Number of nodes of the B+ tree : " << bptree.getNumOfNodes() << endl;
     cout << "Height of the B+ tree          : " << bptree.getHeight() << endl;
-    cout << "Content of Root Node of the updated B+ tree" << endl;
+    cout << "Content of Root Node" << endl;
     bptree.displayNode(bptree.getRoot());
-    cout << "\nContent of Root Node's 1st child of the updated B+ tree" << endl;
+    cout << "\nContent of Root Node's 1st child" << endl;
     bptree.displayNode(bptree.getRoot()->getFirstChild());
     cout << "__________________________________________________________________________" << endl;
 
@@ -169,7 +169,7 @@ int main()
     cout << "\nRetrieving movies with 'numVotes' from 30,000 to 40,000, both inclusive\n"
          << endl;
     // We call search with lower < upper to perform a range query on the keys
-    bptree.search(20000, 50000);
+    bptree.search(30000, 40000);
     cout << "\nTotal number of index nodes accessed by the search         : " << bptree.getNumIndexNodesAccessed() << endl;
     cout << "Total number of data blocks accessed by the search         : " << disk.getNumBlocksAccessed() << endl;
     cout << "Average of 'averageRating' attribute of records retrieved  : " << bptree.getAverageOfAverageRatings() << endl;
@@ -192,9 +192,9 @@ int main()
     bptree.displayNode(bptree.getRoot()->getFirstChild());
     cout << "__________________________________________________________________________" << endl;
 
-    bptree.displayAllLeafNodes();
+    // bptree.displayAllLeafNodes();
 
-    cout << "All experiments done." << endl;
+    cout << "\nAll experiments for block size " << BLOCKSIZE << "B completed." << endl;
 
     return 0;
 }
