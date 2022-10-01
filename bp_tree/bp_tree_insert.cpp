@@ -319,51 +319,41 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
         TreeNode *nextNode = (TreeNode *)curNode->pointer[curNode->numOfKey];
 
         // Extra pointer to keep track of new child pointer
-        int tempKeyList[maxDataKey + 1];
+        int tempKeyList[maxDataKey + 2];
         void *tempPointerList[maxDataKey + 2];
 
-        // Copy all keys into temp key list
-        for (int i = 0; i < maxDataKey; i++)
-        {
-            tempKeyList[i] = curNode->dataKey[i];
+        for( int j = maxDataKey + 1; j < 0; j--){
+
+            // This is to retrieve child nodes first key
+            int tempkey = ((TreeNode *)tempPointerList[j])->dataKey[0];
         }
 
-
-
+        // Copy all pointers into temp pointer list
+        // Copy all child nodes left most key into temp key list
         for (int i = 0; i < maxDataKey + 1; i++)
         {
             tempPointerList[i] = curNode->pointer[i];
+            tempKeyList[i] = ((TreeNode *)(curNode->pointer[i]))->dataKey[0];
         }
 
         // Find index to insert pointer
         int i = 0;
-        while (key > tempKeyList[i] && i < maxDataKey)
+        while (key > tempKeyList[i] && i < maxDataKey + 1)
         {
             i++;
         }
 
-        // Shift temp keys back by 1 space
-        for (int j = maxDataKey; j > i; j--)
+        // Shift temp keys and insert child key
+        for (int j = maxDataKey + 1; j > i; j--)
         {
             tempKeyList[j] = tempKeyList[j - 1];
+            tempPointerList[j] = tempPointerList[j-1];
         }
 
         // Insert new key
         tempKeyList[i] = key;
+        tempPointerList[i] = childNode;
 
-        // Shift temp pointer back 1 space
-        // im not too sure if it's j > i + 1 but seems correct
-        for (int j = maxDataKey + 1; j > i + 1; j--)
-        {
-            tempPointerList[j] = tempPointerList[j - 1];
-        }
-
-        // Insert new pointer to right of child's key
-        // im not too sure if it's [i + 1] but seems correct
-        tempPointerList[i + 1] = childNode;
-
-        // // Split nodes into 2. floor(n/2) keys for left node
-        // curNode->numOfKey = (maxDataKey + 1) / 2;
 
         int leftNodeNumOfKey = (int)ceil(maxDataKey / 2);
         int rightNodeNumOfKey = (int)floor(maxDataKey / 2);
@@ -371,11 +361,6 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
         int leftNodeNumOfPointer = leftNodeNumOfKey + 1;
         int rightNodeNumOfPointer = rightNodeNumOfKey + 1;
 
-        // Update left keys into curNode from tempKeyList
-        for (i = 0; i < leftNodeNumOfKey; i++)
-        {
-            curNode->dataKey[i] = tempKeyList[i];
-        }
 
         // Update left pointer into curNode from tempPointerList
         for (i = 0; i < leftNodeNumOfPointer; i++)
@@ -383,21 +368,24 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
             curNode->pointer[i] = tempPointerList[i];
         }
 
-        // Update right keys into newInternalNode from tempkeylist
-
-        // Next update new internal node
-        // Keep track of i index since we are using remaining keys and pointers
-        int initial_i = i;
-        for (int j = 0; j < rightNodeNumOfKey; i++, j++)
-        {
-            newInternalNode->dataKey[j] = tempKeyList[i];
-        }
-
-        // Update right pointer into newInternalNode from tempPointerList
-        i = initial_i;
+        // Update right pointers into newInternalNode from tempPointerlist
         for (int j = 0; j < rightNodeNumOfPointer; i++, j++)
         {
             newInternalNode->pointer[j] = tempPointerList[i];
+        }
+
+        // Next Update the keys of the parent node
+        // Skip first index because parent's first key usually take second child's key
+        for (i = 0; i < leftNodeNumOfKey; i++){
+            curNode->dataKey[i] = tempKeyList[i+1];
+        }
+        // have not reach the last index yet so increment by 1
+        ++i;
+
+        // Next Update right node key
+        // Skip first index because parent's first key usually take second child's key
+        for (int j = 0; j < rightNodeNumOfKey; j++, i++){
+            newInternalNode->dataKey[j] = tempKeyList[i+1];
         }
 
         // update numOfKey
@@ -408,12 +396,8 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
         newInternalNode->pointer[newInternalNode->numOfKey] = nextNode;
         newInternalNode->isLeaf = false;
 
-        // Assign curNode pointer to new internal address
         // internal nodes should NOT be pointing to each other on the same level
-        // curNode->pointer[curNode->numOfKey] = newInternalNode;
-
-        // Update parentNode with these 2 new internal nodes
-
+        // increment num of nodes
         numOfNode++;
 
         // if current node is root, we need to create new root
@@ -429,7 +413,7 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
             }
 
             // Update parent root to hold children
-            newParentRoot->dataKey[0] = tempNode->dataKey[0]; // to update
+            newParentRoot->dataKey[0] = tempNode->dataKey[0];
 
             // Update parent root children with previous 2 nodes
             newParentRoot->pointer[0] = curNode;
