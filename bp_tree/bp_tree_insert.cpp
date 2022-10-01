@@ -328,12 +328,14 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
             tempKeyList[i] = curNode->dataKey[i];
         }
 
+
+
         for (int i = 0; i < maxDataKey + 1; i++)
         {
             tempPointerList[i] = curNode->pointer[i];
         }
 
-        // Find index to insert key
+        // Find index to insert pointer
         int i = 0;
         while (key > tempKeyList[i] && i < maxDataKey)
         {

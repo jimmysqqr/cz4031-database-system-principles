@@ -20,11 +20,8 @@ void BPTree::search(int lower, int upper)
     else
     {
         // Display the root (it was accessed in the search process)
-        ++numOfNodesAccessed;
-        if(numOfNodesAccessed <= 5){
-            cout << " - Root accessed. Contents..." << endl;
-            displayNode(root);
-        }
+        cout << ++numOfNodesAccessed <<  " - Root accessed. Contents..." << endl;
+        displayNode(root);
         
         // Pointer to current node
         TreeNode *curr = root;
@@ -41,15 +38,15 @@ void BPTree::search(int lower, int upper)
                     curr = (TreeNode *)curr->pointer[i];
 
                     // Display the current node (it was accessed in the search process)
-                    ++numOfNodesAccessed;
+                    numOfNodesAccessed++;
                     if(numOfNodesAccessed <= 5){
                         if(!curr->isLeaf){
-                            cout << " - Non-Leaf node accessed. Contents..." << endl;
+                            cout << numOfNodesAccessed << " - Non-Leaf node accessed. Contents..." << endl;
                             displayNode(curr);
                             break;
                         }
                         else {
-                            cout << " - Leaf node accessed. Contents..." << endl;
+                            cout << numOfNodesAccessed << " - Leaf node accessed. Contents..." << endl;
                             displayNode(curr);
                             break;
                         }
@@ -63,15 +60,15 @@ void BPTree::search(int lower, int upper)
                     curr = (TreeNode *)curr->pointer[i + 1];
 
                     // Display the current node (it was accessed in the search process)
-                    ++numOfNodesAccessed;
+                    numOfNodesAccessed++;
                     if(numOfNodesAccessed <= 5){
                         if(!curr->isLeaf){
-                            cout << " - Non-Leaf node accessed. Contents..." << endl;
+                            cout << numOfNodesAccessed << " - Non-Leaf node accessed. Contents..." << endl;
                             displayNode(curr);
                             break;
                         }
                         else {
-                            cout << " - Leaf node accessed. Contents..." << endl;
+                            cout << numOfNodesAccessed << " - Leaf node accessed. Contents..." << endl;
                             displayNode(curr);
                             break;
                         }
@@ -79,8 +76,6 @@ void BPTree::search(int lower, int upper)
                 }
             }
         }
-
-        cout << " - We've reached the leaves!" << endl;
 
         // We have now hit the leaf node with the first key that is withing the range.
         // We shall now traverse the linked list of TreeNodes (lowest level of B+ tree) and display the records with their key within the range.
@@ -107,7 +102,7 @@ void BPTree::search(int lower, int upper)
                 // Else only display the records if the key is within the range
                 if (lower <= curr->dataKey[i] && curr->dataKey[i] <= upper)
                 {
-                    cout << "\nRecords with key (numVotes) = " << curr->dataKey[i] << ":\n";
+                    cout << "Records with key (numVotes) = " << curr->dataKey[i] << ": ";
 
                     // Access the linked list node and print all corresponding records
                     displayList((ListNode *)curr->pointer[i]);
@@ -122,7 +117,7 @@ void BPTree::search(int lower, int upper)
                 curr = (TreeNode *)curr->pointer[curr->numOfKey];
 
                 // Display the current node (it was accessed in the search process)
-                cout << ++numOfNodesAccessed << " - Moving to next leaf node :)" << endl;
+                cout << "\n" << ++numOfNodesAccessed << " - Moving to next leaf node" << endl;
             }
 
             // Else switch the flag and the loop exits

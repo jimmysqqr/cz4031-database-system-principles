@@ -75,5 +75,5 @@ int BPTree::getHeight()
     }
 
     // Don't forget to count the leaf node as a level
-    return ++numOfLevel;
+    return numOfLevel;
 }

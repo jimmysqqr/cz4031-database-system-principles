@@ -18,9 +18,12 @@ int main()
 {
     // =============== Read in data and save on disk ======================= //
     // User can set the block size
-    cout << "Welcome! First enter the Block Size (200 or 500 Bytes): ";
-    int BLOCKSIZE = 200;
-    // cin >> BLOCKSIZE;
+    cout << "Welcome! First enter '1' or '2' to select the Block Size " << endl; 
+    cout << "(1) 200 Bytes" << endl;
+    cout << "(2) 500 Bytes" << endl;
+    int input;
+    cin >> input;
+    int BLOCKSIZE = (input - 1) ? 500 : 200;
 
     // Error handling by setting the Block Size to 200 by default
     if (BLOCKSIZE != 200 && BLOCKSIZE != 500)
@@ -32,9 +35,6 @@ int main()
 
     // Create a 150MB disk
     DiskStorage disk(150000000, BLOCKSIZE);
-
-    // Create a 350MB disk (changeeeeeee)
-    DiskStorage index(350000000, BLOCKSIZE);
 
     // Creating the tree
     BPTree bptree = BPTree(BLOCKSIZE, &disk);
@@ -53,6 +53,7 @@ int main()
         cout << "\nReading in data..." << endl;
         cout << "Building B+ Index simultaneously..." << endl;
 
+        cout << "Be patient this takes up to 5 mins, progress below out of 107 units (each unit = 10,000 records):" << endl;
         // Each line in the file will be read into this variable
         string line;
 
@@ -101,14 +102,15 @@ int main()
 
             if (recordNum % 10000 == 0)
             {
-                cout << (int)(recordNum / 10000) << endl;
+                cout << (int)(recordNum / 10000) << " ";
                 ;
             }
 
-            // if (recordNum == 100000)
-            //     break;
+            // debug
+            if (recordNum == 5000)
+                break;
         }
-        cout << "Number of records read: " << recordNum << endl;
+        cout << "\nNumber of records read: " << recordNum << endl;
         file.close();
 
         // Iterating through the sorted multimap
@@ -138,6 +140,10 @@ int main()
     cout << "\nParameter n of the B+ Tree     : " << bptree.getMaxDataKey() << endl;
     cout << "Number of nodes of the B+ tree : " << bptree.getNumOfNodes() << endl;
     cout << "Height of the B+ tree          : " << bptree.getHeight() << endl;
+    cout << "Content of Root Node of the updated B+ tree" << endl;
+    bptree.displayNode(bptree.getRoot());
+    cout << "\nContent of Root Node's 1st child of the updated B+ tree" << endl;
+    bptree.displayNode(bptree.getRoot()->getFirstChild());
     cout << "__________________________________________________________________________" << endl;
 
     // Reset the no. of blocks accessed for the next experiment
@@ -163,7 +169,7 @@ int main()
     cout << "\nRetrieving movies with 'numVotes' from 30,000 to 40,000, both inclusive\n"
          << endl;
     // We call search with lower < upper to perform a range query on the keys
-    bptree.search(30000, 40000);
+    bptree.search(20000, 50000);
     cout << "\nTotal number of index nodes accessed by the search         : " << bptree.getNumIndexNodesAccessed() << endl;
     cout << "Total number of data blocks accessed by the search         : " << disk.getNumBlocksAccessed() << endl;
     cout << "Average of 'averageRating' attribute of records retrieved  : " << bptree.getAverageOfAverageRatings() << endl;
@@ -177,14 +183,18 @@ int main()
     cout << "\n\n\n============================== Experiment 5 ==============================" << endl;
     cout << "\nDeleting movies with 'numVotes' equal to 1,000" << endl;
     int numDeleted = bptree.remove(1000);
-    cout << "Number of times that a node is deleted (or two nodes are merged): " << numDeleted << endl;
-    cout << "Number of nodes of the updated B+ tree : " << bptree.getNumOfNodes() << endl;
-    cout << "Height of the updated B+ tree          : " << bptree.getHeight() << endl;
-    cout << "Content of Root Node of the updated B+ tree" << endl;
+    cout << "\nNumber of times that a node is deleted (or two nodes are merged)   : " << numDeleted << endl;
+    cout << "Number of nodes of the updated B+ tree                             : " << bptree.getNumOfNodes() << endl;
+    cout << "Height of the updated B+ tree                                      : " << bptree.getHeight() << endl;
+    cout << "\nContent of Root Node of the updated B+ tree" << endl;
     bptree.displayNode(bptree.getRoot());
     cout << "Content of Root Node's 1st child of the updated B+ tree" << endl;
-    bptree.displayNode(bptree.getRoot());
+    bptree.displayNode(bptree.getRoot()->getFirstChild());
     cout << "__________________________________________________________________________" << endl;
+
+    bptree.displayAllLeafNodes();
+
+    cout << "All experiments done." << endl;
 
     return 0;
 }

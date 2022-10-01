@@ -10,7 +10,8 @@ class TreeNode
 {
 private:
     // pointer to the next node
-    // will be either an array of TreeNode pointers (internal nodes) or ListNode pointers (leaf nodes) {hence the use of void *}
+    // will be either an array of TreeNode pointers (internal nodes) or ListNode pointers (linked list of a leaf node) 
+    // hence the use of void *
     // total number of pointer will be = total number of data keys + 1
     void **pointer;
 
@@ -29,6 +30,12 @@ private:
 public:
     // Constructor, maxDataKey referes to the number of data keys in a node
     TreeNode(int maxDataKey);
+
+    // Helper function to retrieve the first child of a node
+    TreeNode *getFirstChild()
+    {
+        return (TreeNode *)this->pointer[0];
+    }
 };
 
 class ListNode
@@ -135,6 +142,8 @@ public:
 
     // Function that prints the entire linked list (pointed by the leaves)
     void displayList(ListNode *leafNode);
+
+    void displayAllLeafNodes();
 };
 
 #endif
