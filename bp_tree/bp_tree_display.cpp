@@ -48,6 +48,8 @@ void BPTree::displayList(ListNode *head)
 {
     // Create a temp variable to traverse the linked list
     ListNode *temp = head;
+    
+    int numDisplayed = 0;
 
     cout << "Reading them from disk, traversing the linked list..." << endl;
 
@@ -57,9 +59,13 @@ void BPTree::displayList(ListNode *head)
         // Use the adress to read the record from the disk
         Record *record = disk->readFromDisk(temp->recordAddress, sizeof(Record));
 
-        // Print the contents of the record
-        cout << "[" << record->tconst << "|" << record->averageRating << "|" << record->numVotes << "] --> ";
-
+        // Only displaying 5 records
+        if(numDisplayed < 5){
+            // Print the contents of the record
+            cout << "[" << record->tconst << "|" << record->averageRating << "|" << record->numVotes << "] --> ";
+            numDisplayed++;
+        }
+        
         // Increment the sum of averageRating and numofRecordsRetrieved
         sumOfAverageRating += record->averageRating;
         numOfRecordsRetrieved += 1;

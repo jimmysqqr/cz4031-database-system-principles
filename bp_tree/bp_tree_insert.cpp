@@ -41,12 +41,20 @@ void BPTree::insertKey(Address address, int key)
                 // If key is smaller than current key, go to left node pointer
                 if (key < curNode->dataKey[i])
                 {
-                    // move to next node
+                    // Move to the next node (left ptr)
                     curNode = (TreeNode *)curNode->pointer[i];
                     break;
                 }
 
-                // if key is larger than all keys in the node, point to last pointer of last key
+                // // If key is equal to the current key, go to right node pointer
+                // if(key == curNode->dataKey[i])
+                // {
+                //     // Move to the next node (right ptr)
+                //     curNode = (TreeNode *)curNode->pointer[i+1];
+                //     break;
+                // }
+
+                // if key is larger than all keys in the node, go to last pointer of last key
                 if (i == curNode->numOfKey - 1)
                 {
                     // move to next node

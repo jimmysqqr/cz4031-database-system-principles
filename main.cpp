@@ -10,6 +10,7 @@
 #include <string.h>
 #include <vector>
 #include <unordered_map>
+#include <map>
 
 using namespace std;
 
@@ -61,7 +62,7 @@ int main()
         // Flag to check if it is the first line of the tsv
         bool firstLine = true;
 
-        // cout << "record | save tconst | save averageRating & numVotes | write record to disk | insert key into tree" << endl;
+        multimap<int, Address> bulkLoadList;
 
         while (getline(file, line))
         {
@@ -90,8 +91,11 @@ int main()
             // Write this record to the disk
             Address address = disk.writeToDisk(&record, sizeof(Record));
 
+            // Insert into this multimap first. It maintains a sorted order wrt numVotes
+            bulkLoadList.insert(pair<int, Address>(record.numVotes, address));
+
             // Building B+ tree index on numVotes by inserting the records sequentially
-            bptree.insertKey(address, record.numVotes);
+            // bptree.insertKey(address, record.numVotes);
 
             recordNum++;
 
@@ -101,11 +105,20 @@ int main()
                 ;
             }
 
-            if (recordNum == 500)
-                break;
+            // if (recordNum == 1000)
+            //     break;
         }
         cout << "Number of records read: " << recordNum << endl;
         file.close();
+
+        // Iterating through the sorted multimap
+        multimap<int, Address>::iterator itr;
+        cout << "Loading sorted records into B+ tree: " << endl;
+        for (itr = bulkLoadList.begin(); itr != bulkLoadList.end(); ++itr) {
+            // Insert into B+ tree in ascending order of numVotes
+            bptree.insertKey(itr->second, itr->first);
+        }
+        cout << endl;
     }
 
     // Experiment 1
@@ -135,7 +148,7 @@ int main()
     cout << "\nRetrieving movies with 'numVotes'equal to 500\n"
          << endl;
     // We call search with lower = upper to perform a specific key query
-    bptree.search(12, 12);
+    bptree.search(500, 500);
     cout << "\nTotal number of index nodes accessed by the search         : " << bptree.getNumIndexNodesAccessed() << endl;
     cout << "Total number of data blocks accessed by the search         : " << disk.getNumBlocksAccessed() << endl;
     cout << "Average of 'averageRating' attribute of records retrieved  : " << bptree.getAverageOfAverageRatings() << endl;
