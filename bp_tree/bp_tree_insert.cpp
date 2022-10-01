@@ -321,13 +321,7 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
         // Extra pointer to keep track of new child pointer
         int tempKeyList[maxDataKey + 2];
         void *tempPointerList[maxDataKey + 2];
-
-        for( int j = maxDataKey + 1; j < 0; j--){
-
-            // This is to retrieve child nodes first key
-            int tempkey = ((TreeNode *)tempPointerList[j])->dataKey[0];
-        }
-
+        
         // Copy all pointers into temp pointer list
         // Copy all child nodes left most key into temp key list
         for (int i = 0; i < maxDataKey + 1; i++)
