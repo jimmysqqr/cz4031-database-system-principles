@@ -51,8 +51,14 @@ void BPTree::search(int lower, int upper)
                     curr = (TreeNode *)curr->pointer[i + 1];
 
                     // Display the current node (it was accessed in the search process)
-                    cout << ++numOfNodesAccessed << " - Non-Leaf node accessed. Contents..." << endl;
-                    displayNode(curr);
+                    if(!curr->isLeaf){
+                        cout << ++numOfNodesAccessed << " - Non-Leaf node accessed. Contents..." << endl;
+                        displayNode(curr);
+                    }
+                    else {
+                        cout << ++numOfNodesAccessed << " - Leaf node accessed. Contents..." << endl;
+                        displayNode(curr);
+                    }
 
                     break;
                 }

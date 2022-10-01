@@ -30,7 +30,7 @@ TreeNode *BPTree::getParent(TreeNode *targetNode, int key)
         }
 
         // Else we must go down one level, this loop helps us pick the current pointer to follow based on the key.
-        // This is in a similar to the search function
+        // This is similar to the search function
         for (int i = 0; i < parent->numOfKey; i++)
         {
             if (key < parent->dataKey[i])
