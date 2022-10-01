@@ -33,7 +33,7 @@ void BPTree::search(int lower, int upper)
             {
                 // If lower is smaller than the current key, we follow the left pointer.
                 if (lower < curr->dataKey[i])
-                {
+                {   
                     // Load node from disk into main memory and update curr accordingly
                     curr = (TreeNode *)curr->pointer[i];
 

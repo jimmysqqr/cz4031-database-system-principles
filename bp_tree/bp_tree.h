@@ -10,7 +10,7 @@ class TreeNode
 {
 private:
     // pointer to the next node
-    // will be either an array of TreeNode pointers (internal nodes) or ListNode pointers (linked list of a leaf node) 
+    // will be either an array of TreeNode pointers (internal nodes) or ListNode pointers (linked list of a leaf node)
     // hence the use of void *
     // total number of pointer will be = total number of data keys + 1
     void **pointer;
@@ -142,8 +142,6 @@ public:
 
     // Function that prints the entire linked list (pointed by the leaves)
     void displayList(ListNode *leafNode);
-
-    void displayAllLeafNodes();
 };
 
 #endif
