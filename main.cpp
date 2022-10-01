@@ -176,7 +176,7 @@ int main()
     // Experiment 5
     cout << "\n\n\n============================== Experiment 5 ==============================" << endl;
     cout << "\nDeleting movies with 'numVotes' equal to 1,000" << endl;
-    int numDeleted = bptree.remove(11);
+    int numDeleted = bptree.remove(1000);
     cout << "Number of times that a node is deleted (or two nodes are merged): " << numDeleted << endl;
     cout << "Number of nodes of the updated B+ tree : " << bptree.getNumOfNodes() << endl;
     cout << "Height of the updated B+ tree          : " << bptree.getHeight() << endl;

@@ -140,7 +140,8 @@ void BPTree::insertKey(Address address, int key)
 
             // Create temporary list for keys and pointers
             int tempKeyList[maxDataKey + 1];
-            void *tempPointerList[maxDataKey + 1]; // should be Address[], not TreeNode[]
+            // previously was void *
+            ListNode *tempPointerList[maxDataKey + 1];
 
             // Initialize next node
             TreeNode *nextNode = (TreeNode *)curNode->pointer[curNode->numOfKey];
@@ -150,7 +151,7 @@ void BPTree::insertKey(Address address, int key)
             for (i = 0; i < maxDataKey; i++)
             {
                 tempKeyList[i] = curNode->dataKey[i];
-                tempPointerList[i] = (Address *)curNode->pointer[i];
+                tempPointerList[i] = (ListNode *)curNode->pointer[i];
             }
 
             // Get index where key can be inserted
@@ -330,7 +331,7 @@ void BPTree::insertUpdateParent(TreeNode *curNode, TreeNode *childNode, int key)
 
         // Find index to insert key
         int i = 0;
-        while (key < tempKeyList[i] && i < maxDataKey)
+        while (key > tempKeyList[i] && i < maxDataKey)
         {
             i++;
         }
