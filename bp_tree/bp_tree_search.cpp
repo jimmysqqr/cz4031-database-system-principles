@@ -92,7 +92,7 @@ void BPTree::search(int lower, int upper)
         numOfRecordsRetrieved = 0;
 
         // For expt 4, a counter to limit the terminal output to 5 leafnodes only
-        int numOfLeafNodesAccessed = 1;
+        int numOfLeafNodesAccessed = 0;
         bool printLeaf = true;
 
         while (flag)

@@ -37,7 +37,7 @@ int BPTree::remove(int key)
 
         // traverse the keys
 
-        // set parent node and disk address in case of updates
+        // set parent node in case of updates
         parentNode = currentNode;
         // parentDiskAddress = currentDiskAddress;
 
@@ -100,7 +100,6 @@ int BPTree::remove(int key)
     // we have found the key to remove
     // now remove the entire linked list pointed by this key
 
-    // get pointer to first record from disk
     ListNode *headListNode = (ListNode *)currentNode->pointer[keyIdx];
     ListNode *tempListNode = headListNode;
 
@@ -181,8 +180,6 @@ int BPTree::remove(int key)
 
         // no stats to update
 
-        // write updated node to disk
-
         cout << "Key " << key << " in root node deleted." << endl;
 
         return numDeletedNodes; // should be 0
@@ -190,9 +187,8 @@ int BPTree::remove(int key)
 
     // (2) leaf node, no rules violated
     // check if leaf node has minimum of floor((n+1)/2) keys
-    if (currentNode->numOfKey >= floor((maxDataKey + 1) / 2))
+    if (currentNode->numOfKey >= (maxDataKey + 1) / 2)
     {
-        // write updated node to disk
 
         // no stats to update
 
@@ -207,10 +203,9 @@ int BPTree::remove(int key)
     // check if left sibling exists
     if (leftSibling >= 0)
     {
-        // load left sibling from disk into main mem
         TreeNode *leftNode = (TreeNode *)parentNode->pointer[leftSibling];
         // check if borrowing a key from left sibling is legal
-        if (leftNode->numOfKey >= floor((maxDataKey + 1) / 2))
+        if (leftNode->numOfKey >= (maxDataKey + 1) / 2)
         {
 
             // insert rightmost key of leftNode into first position of currentNode
@@ -259,11 +254,10 @@ int BPTree::remove(int key)
     // check if right sibling exists
     if (rightSibling <= parentNode->numOfKey && rightSibling >= 0)
     {
-        // load right sibling from disk into main mem
         TreeNode *rightNode = (TreeNode *)parentNode->pointer[rightSibling];
 
         // check if borrowing a key from right sibling is legal
-        if (rightNode->numOfKey >= floor((maxDataKey + 1) / 2))
+        if (rightNode->numOfKey >= (maxDataKey + 1) / 2)
         {
 
             // insert first key of rightNode into last position of currentNode
@@ -311,7 +305,6 @@ int BPTree::remove(int key)
     // check if left sibling exists
     if (leftSibling >= 0)
     {
-        // load left sibling from disk into main mem
         TreeNode *leftNode = (TreeNode *)parentNode->pointer[leftSibling];
 
         // merge left and current node by migrating currentNode content into leftNode
@@ -336,7 +329,6 @@ int BPTree::remove(int key)
     }
     else if (rightSibling <= parentNode->numOfKey && rightSibling >= 0)
     { // check if right sibling exists
-        // load right sibling from disk into main mem
         TreeNode *rightNode = (TreeNode *)parentNode->pointer[rightSibling];
 
         // merge right and current node by migrating rightNode content into currentNode
@@ -378,8 +370,6 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentNode, Tr
 {
 
     int numDeletedNodes = 0;
-
-    // load parent/current and child nodes from disk into main mem
 
     // TODO: huh, why is this needed? it doesnt seem correct
     // check if currentNode is the root
@@ -429,7 +419,7 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentNode, Tr
 
     // check if internal node has minimum of floor(n/2) keys or floor(n/2)+1 pointers
     // if so, no more recursions needed
-    if (currentNode->numOfKey >= floor(maxDataKey / 2))
+    if (currentNode->numOfKey >= maxDataKey / 2)
         return 1;
 
     // (2) current/parent node is NOT root AND violates rules
@@ -457,11 +447,10 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentNode, Tr
     // check if left sibling exists
     if (leftSibling >= 0)
     {
-        // load left sibling from disk into main mem
         TreeNode *leftNode = (TreeNode *)parentNode->pointer[leftSibling];
 
         // check if borrowing a key from left sibling is legal
-        if (leftNode->numOfKey >= floor(maxDataKey / 2))
+        if (leftNode->numOfKey >= maxDataKey / 2)
         {
 
             // insert rightmost key of leftNode into first position of currentNode
@@ -509,12 +498,11 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentNode, Tr
     // check if right sibling exists
     if (rightSibling <= parentNode->numOfKey && rightSibling >= 0)
     {
-        // load right sibling from disk into main mem
-        // TreeNode *rightNode = (TreeNode *)index->readFromDisk(parentNode->pointer[rightSibling], nodeSize);
+       
         TreeNode *rightNode = (TreeNode *)parentNode->pointer[rightSibling];
 
         // check if borrowing a key from right sibling is legal
-        if (rightNode->numOfKey >= floor(maxDataKey / 2))
+        if (rightNode->numOfKey >= maxDataKey / 2)
         {
 
             // insert first key of rightNode into last position of currentNode
@@ -564,7 +552,6 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentNode, Tr
     // check if left sibling exists
     if (leftSibling >= 0)
     {
-        // load left sibling from disk into main mem
         TreeNode *leftNode = (TreeNode *)parentNode->pointer[leftSibling];
 
         // move parent node key of the left sibling into the left node
@@ -593,7 +580,6 @@ int BPTree::recursiveParentUpdate(int key, int keyIdx, TreeNode *currentNode, Tr
     }
     else if (rightSibling <= parentNode->numOfKey && rightSibling >= 0)
     { // check if right sibling exists
-        // load right sibling from disk into main mem
         TreeNode *rightNode = (TreeNode *)parentNode->pointer[rightSibling];
 
         // move parent node key of the left sibling into current node
