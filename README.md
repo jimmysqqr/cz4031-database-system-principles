@@ -1,4 +1,4 @@
-# CZ4031 - Database System Principles
+# CZ4031 - Database System Principles (Project 1)
 
 ### Building the project using tasks.json in VSCode
 
