@@ -39,6 +39,7 @@
    "version": "2.0.0"
     }
    ```
-4. At the top row of buttons in VSCode, click Terminal -> Run Build Task (or do Ctrl + Shift + B)
-5. There should be an `output.exe` file in your workspace
-6. In the terminal, type `./output` and press Enter to run the executable
+4. Check the line ```"command": "C:\\msys64\\mingw64\\bin\\g++.exe"```. Provide the path to your g++ here.
+5. At the top row of buttons in VSCode, click Terminal -> Run Build Task (or do Ctrl + Shift + B)
+6. There should be an `output.exe` file in your workspace
+7. In the terminal, type `./output` and press Enter to run the executable
