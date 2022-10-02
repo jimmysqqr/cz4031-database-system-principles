@@ -141,7 +141,8 @@ public:
     void displayNode(TreeNode *node);
 
     // Function that prints the entire linked list (pointed by the leaves)
-    void displayList(ListNode *leafNode);
+    // print flag used to limit the terminal output to first 5 leaf nodes only
+    void displayList(ListNode *leafNode, bool print);
 };
 
 #endif

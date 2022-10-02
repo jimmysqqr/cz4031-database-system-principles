@@ -20,9 +20,9 @@ void BPTree::search(int lower, int upper)
     else
     {
         // Display the root (it was accessed in the search process)
-        cout << ++numOfNodesAccessed <<  " - Root accessed. Contents..." << endl;
+        cout << ++numOfNodesAccessed << " - Root accessed. Contents..." << endl;
         displayNode(root);
-        
+
         // Pointer to current node
         TreeNode *curr = root;
 
@@ -33,19 +33,21 @@ void BPTree::search(int lower, int upper)
             {
                 // If lower is smaller than the current key, we follow the left pointer.
                 if (lower < curr->dataKey[i])
-                {   
-                    // Load node from disk into main memory and update curr accordingly
+                {
+                    // Load node and update curr accordingly
                     curr = (TreeNode *)curr->pointer[i];
 
                     // Display the current node (it was accessed in the search process)
-                    numOfNodesAccessed++;
-                    if(numOfNodesAccessed <= 5){
-                        if(!curr->isLeaf){
+                    if (++numOfNodesAccessed <= 5)
+                    {
+                        if (!curr->isLeaf)
+                        {
                             cout << numOfNodesAccessed << " - Non-Leaf node accessed. Contents..." << endl;
                             displayNode(curr);
                             break;
                         }
-                        else {
+                        else
+                        {
                             cout << numOfNodesAccessed << " - Leaf node accessed. Contents..." << endl;
                             displayNode(curr);
                             break;
@@ -56,18 +58,20 @@ void BPTree::search(int lower, int upper)
                 // If lower is larger than all keys, we follow right pointer (rightmost pointer actually!).
                 if (i == curr->numOfKey - 1)
                 {
-                    // Load node from disk into main memory and update curr accordingly
+                    // Load node and update curr accordingly
                     curr = (TreeNode *)curr->pointer[i + 1];
 
                     // Display the current node (it was accessed in the search process)
-                    numOfNodesAccessed++;
-                    if(numOfNodesAccessed <= 5){
-                        if(!curr->isLeaf){
+                    if (++numOfNodesAccessed <= 5)
+                    {
+                        if (!curr->isLeaf)
+                        {
                             cout << numOfNodesAccessed << " - Non-Leaf node accessed. Contents..." << endl;
                             displayNode(curr);
                             break;
                         }
-                        else {
+                        else
+                        {
                             cout << numOfNodesAccessed << " - Leaf node accessed. Contents..." << endl;
                             displayNode(curr);
                             break;
@@ -82,20 +86,23 @@ void BPTree::search(int lower, int upper)
 
         // Flag indicating whether we're within range (current key < upper)
         bool flag = true;
-        // numOfNodesAccessed++; // Cuz no matter what 1 leaf node will be accessed
 
         // Reset the variables that help us return the average 'averageRating'
         sumOfAverageRating = 0.0;
         numOfRecordsRetrieved = 0;
 
-        // for expt 4
-        int numOfLeafNodesAccessed = 0;
+        // For expt 4, a counter to limit the terminal output to 5 leafnodes only
+        int numOfLeafNodesAccessed = 1;
+        bool printLeaf = true;
 
         while (flag)
         {
-            // expt 4
-            if (numOfLeafNodesAccessed == 5) break;
-            
+            // For expt 4, a counter to limit the terminal output to 5 leafnodes only
+            if (numOfLeafNodesAccessed == 5)
+            {
+                printLeaf = false;
+            }
+
             for (int i = 0; i < curr->numOfKey; i++)
             {
                 // If we've exceeded the range, switch the flag
@@ -108,11 +115,14 @@ void BPTree::search(int lower, int upper)
                 // Else only display the records if the key is within the range
                 if (lower <= curr->dataKey[i] && curr->dataKey[i] <= upper)
                 {
-                    cout << "Records with key (numVotes) = " << curr->dataKey[i] << ": ";
+                    // Limiting terminal output to first 5 leaf nodes
+                    if(printLeaf)
+                    {
+                        cout << "Records with key (numVotes) = " << curr->dataKey[i] << ": ";
+                    }
 
                     // Access the linked list node and print all corresponding records
-                    displayList((ListNode *)curr->pointer[i]);
-                    numOfLeafNodesAccessed++;
+                    displayList((ListNode *)curr->pointer[i], printLeaf);
                 }
             }
 
@@ -124,7 +134,9 @@ void BPTree::search(int lower, int upper)
                 curr = (TreeNode *)curr->pointer[curr->numOfKey];
 
                 // Display the current node (it was accessed in the search process)
-                cout << "\n" << ++numOfNodesAccessed << " - Moving to next leaf node" << endl;
+                cout << "\n"
+                     << ++numOfNodesAccessed << " - Moving to next leaf node" << endl;
+                numOfLeafNodesAccessed++;
             }
 
             // Else switch the flag and the loop exits

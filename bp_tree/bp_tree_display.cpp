@@ -46,12 +46,10 @@ void BPTree::displayNode(TreeNode *curr)
 
 // Function that prints the entire linked list (pointed by the leaves)
 // It also computes and displays the average of “averageRating’s” of the records that are returned
-void BPTree::displayList(ListNode *head)
+void BPTree::displayList(ListNode *head, bool print)
 {
     // Create a temp variable to traverse the linked list
     ListNode *temp = head;
-
-    int numDisplayed = 0;
 
     // cout << "Traversing the linked list..." << endl;
 
@@ -61,12 +59,10 @@ void BPTree::displayList(ListNode *head)
         // Use the adress to read the record from the disk
         Record *record = disk->readFromDisk(temp->recordAddress, sizeof(Record));
 
-        // Only displaying 5 records
-        if (numDisplayed < 5)
+        // Print the contents of the record
+        if (print)
         {
-            // Print the contents of the record
-            cout << "[" << record->tconst << "|" << record->averageRating << "|" << record->numVotes << "]-->";
-            numDisplayed++;
+            cout << "[" << record->tconst << "|" << record->averageRating << "|" << record->numVotes << "]--> ";
         }
 
         // Increment the sum of averageRating and numofRecordsRetrieved
@@ -78,6 +74,9 @@ void BPTree::displayList(ListNode *head)
     }
 
     // Formatting
-    cout << endl;
+    if (print)
+    {
+        cout << endl;
+    }
     return;
 }

@@ -53,7 +53,7 @@ int main()
         cout << "\nReading in data..." << endl;
         cout << "Building B+ Index simultaneously..." << endl;
 
-        cout << "\nBe patient this takes up to 5 mins, progress below out of 107 units (each unit = 10,000 records):" << endl;
+        cout << "\nBe patient this takes up to 10 mins, progress below out of 107 units (each unit = 10,000 records):" << endl;
         // Each line in the file will be read into this variable
         string line;
 
